@@ -33,19 +33,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UPaperSpriteComponent* _bodySprite;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UCameraComponent* _camera;
-
 private:
 	void MoveY(float axisValue);
 	void MoveX(float axisValue);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SpaceShip", meta = (AllowPrivateAccess = true))
+	int _speed;
 
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SpaceShip Input")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SpaceShip")
 	FSpaceShipInput SpaceShipInput;
 
 public:	

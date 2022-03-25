@@ -36,14 +36,9 @@ ASpaceShip::ASpaceShip()
 
 	_bodySprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpaceShip"));
 	_bodySprite->AttachTo(RootComponent);
-	_bodySprite->SetWorldRotation(FRotator(0.0f, 90.0f, -90.0f));
+	_bodySprite->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
 
-	_camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	_camera->AttachTo(RootComponent);
-	_camera->ProjectionMode = ECameraProjectionMode::Orthographic;
-	_camera->AspectRatio = 1024.0f;
-	_camera->OrthoWidth = 1024;
-	_camera->SetWorldRotation(FRotator(-90.0f, 0.0f, 0.0f));
+	_speed = 10;
 }
 
 // Called when the game starts or when spawned
@@ -58,7 +53,15 @@ void ASpaceShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	SpaceShipInput.Sanitize();
-	UE_LOG(LogTemp, Warning, TEXT("Movement: (%f %f)"), SpaceShipInput.MovementInput.X, SpaceShipInput.MovementInput.Y);
+	
+	//UE_LOG(LogTemp, Warning, TEXT("Movement: (%f %f)"), SpaceShipInput.MovementInput.X, SpaceShipInput.MovementInput.Y);
+	FVector MovementDirection = FVector(SpaceShipInput.MovementInput.X, SpaceShipInput.MovementInput.Y, 0);
+	if (!MovementDirection.IsNearlyZero())
+	{
+		FVector newPosition = GetActorLocation() + (MovementDirection * _speed);
+		SetActorLocation(newPosition);
+	}
+
 
 }
 
