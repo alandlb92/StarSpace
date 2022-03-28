@@ -2,6 +2,7 @@
 
 
 #include "Bullet.h"
+#include "Components/PrimitiveComponent.h"
 #include "PaperSpriteComponent.h"
 
 // Sets default values
@@ -9,17 +10,17 @@ ABullet::ABullet()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true; 
-	if (!RootComponent)
-	{
-		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BulletBase"));
-	}
-
 	_bodySprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Bullet"));
 	_bodySprite->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	_bodySprite->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+	_bodySprite->SetSimulatePhysics(true);
+	_bodySprite->SetEnableGravity(false);
+	_bodySprite->BodyInstance.bLockRotation = true;
+	_bodySprite->BodyInstance.SetDOFLock(EDOFMode::SixDOF);
 
+	RootComponent = _bodySprite;
 
-	_speed = 10;
+	_speed = 1000;
 
 }
 
@@ -27,7 +28,8 @@ ABullet::ABullet()
 void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
-
+	FVector velocity = FVector(0, _speed, 0);
+	_bodySprite->SetAllPhysicsLinearVelocity(velocity);
 	
 }
 
