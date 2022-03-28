@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Cannon.h"
+#include "Bullet.h"
 #include "SpaceShip.generated.h"
 
 USTRUCT(BlueprintType)
@@ -36,9 +38,18 @@ public:
 private:
 	void MoveY(float axisValue);
 	void MoveX(float axisValue);
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SpaceShip", meta = (AllowPrivateAccess = true))
+	TArray<ACannon*> _cannons;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACannon> _cannonRef;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ABullet> _bulletRef;
+	
+	UPROPERTY(EditAnywhere)
 	int _speed;
 
+	void Shoot();
 
 protected:
 	// Called when the game starts or when spawned

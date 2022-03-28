@@ -5,7 +5,7 @@
 #include "Math/Vector.h"
 #include "PaperSpriteComponent.h"
 #include "Camera/CameraComponent.h"
-#include "..\Public\SpaceShip.h"
+#include "../Public/SpaceShip.h"
 
 
 void FSpaceShipInput::Sanitize()
@@ -35,8 +35,9 @@ ASpaceShip::ASpaceShip()
 	}
 
 	_bodySprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpaceShip"));
-	_bodySprite->AttachTo(RootComponent);
+	_bodySprite->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	_bodySprite->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+
 
 	_speed = 10;
 }
@@ -45,6 +46,17 @@ ASpaceShip::ASpaceShip()
 void ASpaceShip::BeginPlay()
 {
 	Super::BeginPlay();
+	UWorld* world = GetWorld();
+	if (world)
+	{
+		AActor* instance = world->SpawnActor(_cannonRef);
+		instance->AttachToComponent(_bodySprite, FAttachmentTransformRules::KeepRelativeTransform);
+		instance->SetActorRelativeLocation(FVector(0, 0, 50));
+		_cannons.Add((ACannon*)instance);
+	}
+	//ACannon* basicCannon = SpawnActor  //CreateDefaultSubobject<ACannon>(TEXT("BasicCannon"));
+	//basicCannon->AttachToComponent(_bodySprite, FAttachmentTransformRules::KeepRelativeTransform);
+	//_cannons.Add(basicCannon);
 	
 }
 
@@ -65,12 +77,21 @@ void ASpaceShip::Tick(float DeltaTime)
 
 }
 
+void ASpaceShip::Shoot()
+{
+	for (ACannon* cannon : _cannons)
+	{
+		cannon->Shoot(_bulletRef);
+	}
+}
+
 // Called to bind functionality to input
 void ASpaceShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	InputComponent->BindAxis("MoveY", this, &ASpaceShip::MoveY);
 	InputComponent->BindAxis("MoveX", this, &ASpaceShip::MoveX);
+	InputComponent->BindAction("Shoot", IE_Pressed,this, &ASpaceShip::Shoot);
 }
 
 void ASpaceShip::MoveY(float axisValue)

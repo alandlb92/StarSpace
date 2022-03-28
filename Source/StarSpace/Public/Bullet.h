@@ -4,21 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Bullet.h"
-#include "Cannon.generated.h"
+#include "Bullet.generated.h"
 
 UCLASS()
-class STARSPACE_API ACannon : public AActor
+class STARSPACE_API ABullet : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ACannon();
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UPaperSpriteComponent* _cannonSprite;
-
+	ABullet();
+private:
+	UPROPERTY(EditAnywhere)
+		int _speed;
+	UPROPERTY(EditAnywhere)
+		class UPaperSpriteComponent* _bodySprite;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -26,7 +26,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	void Shoot(TSubclassOf<ABullet>);
 
 };

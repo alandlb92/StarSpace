@@ -16,8 +16,6 @@ ACannon::ACannon()
 
 	_cannonSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("CannonSprite"));
 	_cannonSprite->AttachTo(RootComponent);
-	_cannonSprite->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
-
 }
 
 // Called when the game starts or when spawned
@@ -34,8 +32,11 @@ void ACannon::Tick(float DeltaTime)
 
 }
 
-void ACannon::Shoot()
+void ACannon::Shoot(TSubclassOf<ABullet> bullet)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Movement: (%f %f)"), SpaceShipInput.MovementInput.X, SpaceShipInput.MovementInput.Y);
+	UWorld* world = GetWorld();
 	UE_LOG(LogTemp, Warning, TEXT("PIU"));
+	FVector postion = RootComponent->GetComponentLocation();
+	AActor* instance = world->SpawnActor(bullet, &postion);
 }
