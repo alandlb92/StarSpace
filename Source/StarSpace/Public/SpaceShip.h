@@ -19,6 +19,7 @@ public:
 	void Sanitize();
 	void MoveX(float AxisValue);
 	void MoveY(float AxisValue);
+
 private:
 	FVector2D RawMovementInput;
 };
@@ -31,11 +32,17 @@ class STARSPACE_API ASpaceShip : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ASpaceShip();
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UPaperSpriteComponent* _bodySprite;
 
 private:
+	static const FString OwnerTag;
 	void MoveY(float axisValue);
 	void MoveX(float axisValue);
 	TArray<ACannon*> _cannons;
@@ -60,12 +67,4 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SpaceShip")
 	FSpaceShipInput SpaceShipInput;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 };

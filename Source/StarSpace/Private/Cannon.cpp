@@ -32,9 +32,10 @@ void ACannon::Tick(float DeltaTime)
 
 }
 
-void ACannon::Shoot(TSubclassOf<ABullet> bullet)
+void ACannon::Shoot(TSubclassOf<ABullet> bullet, FString ownerTag)
 {
 	UWorld* world = GetWorld();
 	FVector postion = RootComponent->GetComponentLocation() + FVector(0,100,0);
-	AActor* instance = world->SpawnActor(bullet, &postion);
+	ABullet* instance = (ABullet*)world->SpawnActor(bullet, &postion);
+	instance->SetOwnerTag(ownerTag);
 }

@@ -8,6 +8,8 @@
 #include "../Public/SpaceShip.h"
 
 
+const FString  ASpaceShip::OwnerTag = FString(TEXT("Player"));
+
 void FSpaceShipInput::Sanitize()
 {
 	MovementInput = RawMovementInput.ClampAxes(-1.0f, 1.0f);
@@ -89,7 +91,7 @@ void ASpaceShip::Shoot()
 {
 	for (ACannon* cannon : _cannons)
 	{
-		cannon->Shoot(_bulletRef);
+		cannon->Shoot(_bulletRef, OwnerTag);
 	}
 }
 

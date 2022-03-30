@@ -14,17 +14,20 @@ class STARSPACE_API ABullet : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ABullet();
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	void SetOwnerTag(FString);
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 private:
 	UPROPERTY(EditAnywhere)
 		int _speed;
 	UPROPERTY(EditAnywhere)
 		class UPaperSpriteComponent* _bodySprite;
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	FString OwnerTag;
 
 };

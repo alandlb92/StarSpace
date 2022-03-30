@@ -42,3 +42,9 @@ void ABullet::Tick(float DeltaTime)
 		Destroy();
 }
 
+
+// Called every frame
+void ABullet::SetOwnerTag(FString tag)
+{
+	OwnerTag = tag;
+}
