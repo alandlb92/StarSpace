@@ -4,6 +4,7 @@
 #include "Bullet.h"
 #include "Components/PrimitiveComponent.h"
 #include "PaperSpriteComponent.h"
+#include "LocationUltilities.h"
 
 // Sets default values
 ABullet::ABullet()
@@ -37,6 +38,7 @@ void ABullet::BeginPlay()
 void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (!LocationUltilities::IsAppearingOnTheFirstPlayersScreen(RootComponent->GetRelativeLocation(), GetWorld()))
+		Destroy();
 }
 

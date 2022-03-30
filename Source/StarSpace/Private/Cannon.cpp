@@ -34,9 +34,7 @@ void ACannon::Tick(float DeltaTime)
 
 void ACannon::Shoot(TSubclassOf<ABullet> bullet)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Movement: (%f %f)"), SpaceShipInput.MovementInput.X, SpaceShipInput.MovementInput.Y);
 	UWorld* world = GetWorld();
-	UE_LOG(LogTemp, Warning, TEXT("PIU"));
 	FVector postion = RootComponent->GetComponentLocation() + FVector(0,100,0);
 	AActor* instance = world->SpawnActor(bullet, &postion);
 }

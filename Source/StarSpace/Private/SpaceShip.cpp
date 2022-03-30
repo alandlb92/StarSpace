@@ -27,7 +27,7 @@ void FSpaceShipInput::MoveY(float AxisValue)
 // Sets default values
 ASpaceShip::ASpaceShip()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	if (!RootComponent)
 	{
@@ -53,11 +53,15 @@ void ASpaceShip::BeginPlay()
 		instance->AttachToComponent(_bodySprite, FAttachmentTransformRules::KeepRelativeTransform);
 		instance->SetActorRelativeLocation(FVector(0, 0, 50));
 		_cannons.Add((ACannon*)instance);
+
+		_playerController = world->GetFirstPlayerController();
 	}
+
+
 	//ACannon* basicCannon = SpawnActor  //CreateDefaultSubobject<ACannon>(TEXT("BasicCannon"));
 	//basicCannon->AttachToComponent(_bodySprite, FAttachmentTransformRules::KeepRelativeTransform);
 	//_cannons.Add(basicCannon);
-	
+
 }
 
 // Called every frame
@@ -65,17 +69,21 @@ void ASpaceShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	SpaceShipInput.Sanitize();
-	
+
 	//UE_LOG(LogTemp, Warning, TEXT("Movement: (%f %f)"), SpaceShipInput.MovementInput.X, SpaceShipInput.MovementInput.Y);
 	FVector MovementDirection = FVector(SpaceShipInput.MovementInput.X, SpaceShipInput.MovementInput.Y, 0);
 	if (!MovementDirection.IsNearlyZero())
 	{
 		FVector newPosition = GetActorLocation() + (MovementDirection * _speed);
 		SetActorLocation(newPosition);
+		ClampSpaceShipPosition();
 	}
-
-
 }
+
+void ASpaceShip::ClampSpaceShipPosition()
+{
+}
+
 
 void ASpaceShip::Shoot()
 {
@@ -91,7 +99,7 @@ void ASpaceShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	InputComponent->BindAxis("MoveY", this, &ASpaceShip::MoveY);
 	InputComponent->BindAxis("MoveX", this, &ASpaceShip::MoveX);
-	InputComponent->BindAction("Shoot", IE_Pressed,this, &ASpaceShip::Shoot);
+	InputComponent->BindAction("Shoot", IE_Pressed, this, &ASpaceShip::Shoot);
 }
 
 void ASpaceShip::MoveY(float axisValue)

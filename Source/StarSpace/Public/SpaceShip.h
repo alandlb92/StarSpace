@@ -49,7 +49,10 @@ private:
 	UPROPERTY(EditAnywhere)
 	int _speed;
 
+	APlayerController* _playerController;
+
 	void Shoot();
+	void ClampSpaceShipPosition();
 
 protected:
 	// Called when the game starts or when spawned
