@@ -12,8 +12,7 @@ ACannon::ACannon()
 	if (!RootComponent)
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Cannon"));
-	}
-
+	}	
 	_cannonSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("CannonSprite"));
 	_cannonSprite->AttachTo(RootComponent);
 }

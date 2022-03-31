@@ -16,13 +16,16 @@ ABullet::ABullet()
 	_bodySprite->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
 	_bodySprite->SetSimulatePhysics(true);
 	_bodySprite->SetEnableGravity(false);
+
 	_bodySprite->BodyInstance.bLockRotation = true;
-	_bodySprite->BodyInstance.SetDOFLock(EDOFMode::SixDOF);
+
+	_bodySprite->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	_bodySprite->SetNotifyRigidBodyCollision(true);
+	_bodySprite->SetCollisionProfileName(TEXT("Trigger"));
 
 	RootComponent = _bodySprite;
 
 	_speed = 1000;
-
 }
 
 // Called when the game starts or when spawned
@@ -31,7 +34,8 @@ void ABullet::BeginPlay()
 	Super::BeginPlay();
 	FVector velocity = FVector(0, _speed, 0);
 	_bodySprite->SetAllPhysicsLinearVelocity(velocity);
-	
+	_bodySprite->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapBegin);
+	_bodySprite->OnComponentEndOverlap.AddDynamic(this, &ABullet::OnOverlapEnd);
 }
 
 // Called every frame
@@ -47,4 +51,24 @@ void ABullet::Tick(float DeltaTime)
 void ABullet::SetOwnerTag(FString tag)
 {
 	OwnerTag = tag;
+}
+
+void ABullet::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin"));
+	IIBulletReaction* iBulletReaction = Cast<IIBulletReaction>(OtherActor);
+	if (iBulletReaction)
+	{
+		iBulletReaction->BulletReaction(this);
+	}
+}
+
+void ABullet::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd"));
+}
+
+void ABullet::BulletReaction(AActor* BulletToReact)
+{
+	UE_LOG(LogTemp, Warning, TEXT("BulletReaction -> Bullet"));
 }
