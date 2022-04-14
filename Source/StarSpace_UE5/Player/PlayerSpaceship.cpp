@@ -81,13 +81,25 @@ void APlayerSpaceship::Tick(float DeltaTime)
 		ClampSpaceShipPosition();
 	}
 
-	if (_isShooting && _canShoot)
+	if (_isShooting && _canShoot && !_isOverHeat)
 	{
 		Shoot();
 	}
 	else if (!_canShoot)
 	{
 		CountTimeBetweenShoots(DeltaTime);
+	}
+	else if (!_canCoolDown)
+	{
+		CountTimeToCoolDown(DeltaTime);
+	}
+	else if (_canCoolDown && _currentHeating > 0)
+	{
+		CoolDown();
+	}
+	else if (_isOverHeat)
+	{
+		_isOverHeat = false;
 	}
 }
 
@@ -98,6 +110,16 @@ void APlayerSpaceship::CountTimeBetweenShoots(float DeltaTime)
 	if (_counter > TimeBetweenShoots)
 	{
 		_canShoot = true;
+		_counter = 0;
+	}
+}
+
+void APlayerSpaceship::CountTimeToCoolDown(float DeltaTime)
+{
+	_counter += DeltaTime;
+	if (_counter > TimeBetweenShoots)
+	{
+		_canCoolDown = true;
 		_counter = 0;
 	}
 }
@@ -129,9 +151,16 @@ void APlayerSpaceship::Shoot()
 void APlayerSpaceship::Heating()
 {
 	_currentHeating++;
+	_isOverHeat = _currentHeating >= _maxHeating;
 	_playerHUD->UpdatePlayerHeat(_currentHeating, _maxHeating);
 }
 
+void APlayerSpaceship::CoolDown()
+{
+	_canCoolDown = false;
+	_currentHeating--;
+	_playerHUD->UpdatePlayerHeat(_currentHeating, _maxHeating);
+}
 
 
 

@@ -14,7 +14,7 @@ void APlayerHUD::BeginPlay()
 	if (_heatPlayerWidgetClass)
 	{
 		_heatPlayerWidget = CreateWidget<UHeatPlayerWidget>(GetWorld(), _heatPlayerWidgetClass);
-		if (_heatPlayerWidget)
+		if (_heatPlayerWidget != nullptr)
 		{
 			_heatPlayerWidget->AddToViewport();
 		}

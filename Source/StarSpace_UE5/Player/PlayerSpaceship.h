@@ -71,7 +71,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	int _maxHeating;
 	bool _isShooting;
+	bool _isOverHeat;
 	bool _canShoot;
+	bool _canCoolDown;
 
 	APlayerController* _playerController;
 	class APlayerHUD* _playerHUD;
@@ -81,6 +83,8 @@ private:
 	void StopShoot();
 	void Shoot();
 	void CountTimeBetweenShoots(float);
+	void CountTimeToCoolDown(float);
 	void Heating();
+	void CoolDown();
 
 };
