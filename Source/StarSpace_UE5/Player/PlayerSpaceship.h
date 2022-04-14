@@ -74,6 +74,7 @@ private:
 	bool _canShoot;
 
 	APlayerController* _playerController;
+	class APlayerHUD* _playerHUD;
 
 	void ClampSpaceShipPosition();
 	void StartShoot();

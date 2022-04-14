@@ -5,6 +5,7 @@
 #include "Math/Vector.h"
 #include "PaperSpriteComponent.h"
 #include "Camera/CameraComponent.h"
+#include "../UI/PlayerHUD.h"
 
 const FString  APlayerSpaceship::OwnerTag = FString(TEXT("Player"));
 
@@ -24,8 +25,6 @@ void FSpaceShipInput::MoveY(float AxisValue)
 {
 	RawMovementInput.Y = AxisValue;
 }
-
-
 
 // Sets default values
 APlayerSpaceship::APlayerSpaceship()
@@ -61,8 +60,9 @@ void APlayerSpaceship::BeginPlay()
 		_cannons.Add((ACannon*)instance);
 
 		_playerController = world->GetFirstPlayerController();
-		_playerController->SpawnDefaultHUD();
-		//_HUD = _playerController->GetHUD<UPlayerHUD>();
+		_playerHUD = Cast<APlayerHUD>(_playerController->GetHUD());
+		_currentHeating = 0;
+		_playerHUD->UpdatePlayerHeat(_currentHeating, _maxHeating);
 	}
 	
 }
@@ -84,7 +84,6 @@ void APlayerSpaceship::Tick(float DeltaTime)
 	if (_isShooting && _canShoot)
 	{
 		Shoot();
-		Heating();
 	}
 	else if (!_canShoot)
 	{
@@ -122,6 +121,7 @@ void APlayerSpaceship::Shoot()
 	for (ACannon* cannon : _cannons)
 	{
 		cannon->Shoot(_bulletRef, OwnerTag);
+		Heating();
 	}
 	_canShoot = false;
 }
@@ -129,7 +129,7 @@ void APlayerSpaceship::Shoot()
 void APlayerSpaceship::Heating()
 {
 	_currentHeating++;
-	//_HUD->UpdateHeatUI(_currentHeating, _maxHeating);
+	_playerHUD->UpdatePlayerHeat(_currentHeating, _maxHeating);
 }
 
 
