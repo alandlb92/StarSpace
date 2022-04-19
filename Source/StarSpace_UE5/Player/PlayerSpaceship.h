@@ -38,6 +38,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class UPaperSpriteComponent* _bodySprite;
 
@@ -52,6 +54,7 @@ private:
 	static const FString OwnerTag;
 	const float TimeBetweenShoots = .2f;
 	float _counter;
+	UWorld* _world;
 
 	void MoveY(float axisValue);
 	void MoveX(float axisValue);
@@ -77,7 +80,7 @@ private:
 
 	APlayerController* _playerController;
 	class APlayerHUD* _playerHUD;
-
+	void Move();
 	void ClampSpaceShipPosition();
 	void StartShoot();
 	void StopShoot();

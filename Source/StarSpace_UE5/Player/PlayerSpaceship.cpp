@@ -4,7 +4,9 @@
 #include "PlayerSpaceship.h"
 #include "Math/Vector.h"
 #include "PaperSpriteComponent.h"
+#include "PaperSprite.h"
 #include "Camera/CameraComponent.h"
+#include "../Utilitils/LocationUtils.h"
 #include "../UI/PlayerHUD.h"
 
 const FString  APlayerSpaceship::OwnerTag = FString(TEXT("Player"));
@@ -29,7 +31,7 @@ void FSpaceShipInput::MoveY(float AxisValue)
 // Sets default values
 APlayerSpaceship::APlayerSpaceship()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	if (!RootComponent)
 	{
@@ -51,20 +53,21 @@ APlayerSpaceship::APlayerSpaceship()
 void APlayerSpaceship::BeginPlay()
 {
 	Super::BeginPlay();
-	UWorld* world = GetWorld();
-	if (world)
+	_world = GetWorld();
+
+	if (_world)
 	{
-		AActor* instance = world->SpawnActor(_cannonRef);
+		AActor* instance = _world->SpawnActor(_cannonRef);
 		instance->AttachToComponent(_bodySprite, FAttachmentTransformRules::KeepRelativeTransform);
 		instance->SetActorRelativeLocation(FVector(0, 0, 50));
 		_cannons.Add((ACannon*)instance);
 
-		_playerController = world->GetFirstPlayerController();
+		_playerController = _world->GetFirstPlayerController();
 		_playerHUD = Cast<APlayerHUD>(_playerController->GetHUD());
 		_currentHeating = 0;
 		_playerHUD->UpdatePlayerHeat(_currentHeating, _maxHeating);
 	}
-	
+
 }
 
 // Called every frame
@@ -73,13 +76,7 @@ void APlayerSpaceship::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	SpaceShipInput.Sanitize();
 
-	FVector MovementDirection = FVector(SpaceShipInput.MovementInput.X, SpaceShipInput.MovementInput.Y, 0);
-	if (!MovementDirection.IsNearlyZero())
-	{
-		FVector newPosition = GetActorLocation() + (MovementDirection * _speed);
-		SetActorLocation(newPosition);
-		ClampSpaceShipPosition();
-	}
+	Move();
 
 	if (_isShooting && _canShoot && !_isOverHeat)
 	{
@@ -103,29 +100,29 @@ void APlayerSpaceship::Tick(float DeltaTime)
 	}
 }
 
-
-void APlayerSpaceship::CountTimeBetweenShoots(float DeltaTime)
+void APlayerSpaceship::Move()
 {
-	_counter += DeltaTime;
-	if (_counter > TimeBetweenShoots)
+	FVector MovementDirection = FVector(SpaceShipInput.MovementInput.X, SpaceShipInput.MovementInput.Y, 0);
+	if (!MovementDirection.IsNearlyZero())
 	{
-		_canShoot = true;
-		_counter = 0;
-	}
-}
-
-void APlayerSpaceship::CountTimeToCoolDown(float DeltaTime)
-{
-	_counter += DeltaTime;
-	if (_counter > TimeBetweenShoots)
-	{
-		_canCoolDown = true;
-		_counter = 0;
+		FVector newPosition = GetActorLocation() + (MovementDirection * _speed);
+		SetActorLocation(newPosition);
+		ClampSpaceShipPosition();
 	}
 }
 
 void APlayerSpaceship::ClampSpaceShipPosition()
 {
+	FVector maxPositions = LocationUtils::GetRightTopFirstPlayerScreenWorldposition(_world);
+	FVector minPositions = LocationUtils::GetLeftBottonFirstPlayerScreenWorldposition(_world);
+	FVector newPosition = GetActorLocation();
+
+	double xAdjustments = _bodySprite->GetSprite()->GetSourceSize().X / 2;
+	double yAdjustments = _bodySprite->GetSprite()->GetSourceSize().Y / 2;
+
+	newPosition.X = FMath::Clamp<double>(newPosition.X, minPositions.X + xAdjustments, maxPositions.X - xAdjustments);
+	newPosition.Y = FMath::Clamp<double>(newPosition.Y, minPositions.Y + yAdjustments, maxPositions.Y - yAdjustments);
+	SetActorLocation(newPosition);
 }
 
 void APlayerSpaceship::StartShoot()
@@ -137,6 +134,7 @@ void APlayerSpaceship::StopShoot()
 {
 	_isShooting = false;
 }
+
 
 void APlayerSpaceship::Shoot()
 {
@@ -162,9 +160,26 @@ void APlayerSpaceship::CoolDown()
 	_playerHUD->UpdatePlayerHeat(_currentHeating, _maxHeating);
 }
 
+void APlayerSpaceship::CountTimeBetweenShoots(float DeltaTime)
+{
+	_counter += DeltaTime;
+	if (_counter > TimeBetweenShoots)
+	{
+		_canShoot = true;
+		_counter = 0;
+	}
+}
 
+void APlayerSpaceship::CountTimeToCoolDown(float DeltaTime)
+{
+	_counter += DeltaTime;
+	if (_counter > TimeBetweenShoots)
+	{
+		_canCoolDown = true;
+		_counter = 0;
+	}
+}
 
-// Called to bind functionality to input
 void APlayerSpaceship::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

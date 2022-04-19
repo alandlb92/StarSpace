@@ -10,7 +10,9 @@
 class STARSPACE_UE5_API LocationUtils
 {
 public:
-	LocationUtils();
-	~LocationUtils();
 	static bool IsAppearingOnTheFirstPlayersScreen(FVector fVector, UWorld* world);
+	static FVector2D GetFirstPlayersScreenSize(UWorld* world);
+	static FVector2D CovertWorldLocationToFirstPlayersScreenLocation(FVector fVector, UWorld* world);
+	static FVector GetRightTopFirstPlayerScreenWorldposition(UWorld* world);
+	static FVector GetLeftBottonFirstPlayerScreenWorldposition(UWorld* world);
 };
