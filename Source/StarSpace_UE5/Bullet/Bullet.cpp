@@ -10,20 +10,21 @@ ABullet::ABullet()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	if (!RootComponent)
+	{
+		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BulletBase"));
+
+	}
+
 	_bodySprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Bullet"));
 	_bodySprite->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	_bodySprite->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+	_bodySprite->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 	_bodySprite->SetSimulatePhysics(true);
 	_bodySprite->SetEnableGravity(false);
-
 	_bodySprite->BodyInstance.bLockRotation = true;
-
 	_bodySprite->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	_bodySprite->SetNotifyRigidBodyCollision(true);
 	_bodySprite->SetCollisionProfileName(TEXT("Trigger"));
-
-	RootComponent = _bodySprite;
-
 	_speed = 1000;
 }
 
@@ -31,7 +32,7 @@ ABullet::ABullet()
 void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
-	FVector velocity = FVector(0, _speed, 0);
+	FVector velocity = FVector(0, 0, _speed);
 	_bodySprite->SetAllPhysicsLinearVelocity(velocity);
 	_bodySprite->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapBegin);
 	_bodySprite->OnComponentEndOverlap.AddDynamic(this, &ABullet::OnOverlapEnd);
@@ -41,7 +42,7 @@ void ABullet::BeginPlay()
 void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (!LocationUtils::IsAppearingOnTheFirstPlayersScreen(RootComponent->GetRelativeLocation(), GetWorld()))
+	if (!LocationUtils::IsAppearingOnTheFirstPlayersScreen(_bodySprite->GetComponentLocation(), GetWorld()))
 		Destroy();
 }
 

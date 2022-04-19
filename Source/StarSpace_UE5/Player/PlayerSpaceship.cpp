@@ -40,7 +40,7 @@ APlayerSpaceship::APlayerSpaceship()
 
 	_bodySprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpaceShip"));
 	_bodySprite->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	_bodySprite->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+	_bodySprite->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 
 
 	_speed = 10;
@@ -102,7 +102,7 @@ void APlayerSpaceship::Tick(float DeltaTime)
 
 void APlayerSpaceship::Move()
 {
-	FVector MovementDirection = FVector(SpaceShipInput.MovementInput.X, SpaceShipInput.MovementInput.Y, 0);
+	FVector MovementDirection = FVector(SpaceShipInput.MovementInput.X, 0, SpaceShipInput.MovementInput.Y);
 	if (!MovementDirection.IsNearlyZero())
 	{
 		FVector newPosition = GetActorLocation() + (MovementDirection * _speed);
@@ -118,10 +118,10 @@ void APlayerSpaceship::ClampSpaceShipPosition()
 	FVector newPosition = GetActorLocation();
 
 	double xAdjustments = _bodySprite->GetSprite()->GetSourceSize().X / 2;
-	double yAdjustments = _bodySprite->GetSprite()->GetSourceSize().Y / 2;
+	double zAdjustments = _bodySprite->GetSprite()->GetSourceSize().Y/ 2;
 
 	newPosition.X = FMath::Clamp<double>(newPosition.X, minPositions.X + xAdjustments, maxPositions.X - xAdjustments);
-	newPosition.Y = FMath::Clamp<double>(newPosition.Y, minPositions.Y + yAdjustments, maxPositions.Y - yAdjustments);
+	newPosition.Z = FMath::Clamp<double>(newPosition.Z, minPositions.Z + zAdjustments, maxPositions.Z - zAdjustments);
 	SetActorLocation(newPosition);
 }
 

@@ -26,19 +26,19 @@ public:
 	void SetOwnerTag(FString);
 
 	UFUNCTION()
-		void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-		void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION()
-		virtual void  BulletReaction(AActor* BulletToReact) override;
+	virtual void  BulletReaction(AActor* BulletToReact) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UPaperSpriteComponent* _bodySprite;
 private:
 	UPROPERTY(EditAnywhere)
-		int _speed;
-	UPROPERTY(EditAnywhere)
-		class UPaperSpriteComponent* _bodySprite;
+	int _speed;
 
 	FString OwnerTag;
 

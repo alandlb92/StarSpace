@@ -41,7 +41,7 @@ public:
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class UPaperSpriteComponent* _bodySprite;
+	class UPaperSpriteComponent* _bodySprite;
 
 protected:
 	// Called when the game starts or when spawned

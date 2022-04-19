@@ -4,6 +4,7 @@
 #include "Enemy.h"
 #include "PaperSpriteComponent.h"
 #include "../Utilitils/IdUtils.h"
+#include "Components/ChildActorComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -25,8 +26,21 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 	_tag = TEXT("Enemy");
 	_id = IdUtils::GetNewId();
-	UE_LOG(LogTemp, Warning, TEXT("mY ID: %i"), _id);
-	
+	TArray<UChildActorComponent*> cannonsLocations;
+	GetComponents(cannonsLocations, true);
+
+	UWorld* world = GetWorld();
+	for (auto location : cannonsLocations)
+	{
+		AActor* instance = world->SpawnActor(_cannonRef);
+		instance->AttachToComponent(_enemySprite, FAttachmentTransformRules::KeepRelativeTransform);
+		FVector position = location->GetRelativeLocation();
+		position.Y = 5;
+		instance->SetActorRelativeLocation(position);
+
+		instance->SetActorRelativeScale3D(FVector(1 / _enemySprite->GetRelativeScale3D().X));
+		_cannons.Add((ACannon*)instance);
+	}
 }
 
 // Called every frame

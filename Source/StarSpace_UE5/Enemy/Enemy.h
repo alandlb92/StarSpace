@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../Bullet/BulletReaction.h"
+#include "../Cannon/Cannon.h"
 #include "Enemy.generated.h"
 
 
@@ -25,14 +26,19 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UPaperSpriteComponent* _enemySprite;
+	
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACannon> _cannonRef;
+
 	int _health;
 	FString _tag;
 	int _id;
+	TArray<ACannon*> _cannons;
 
 };
