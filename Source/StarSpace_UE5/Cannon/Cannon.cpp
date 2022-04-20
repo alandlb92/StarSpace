@@ -29,15 +29,22 @@ void ACannon::BeginPlay()
 void ACannon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
+void ACannon::SetBulletRotation(FRotator rot)
+{
+	_bulletRotation = rot;
+}
 
 void ACannon::Shoot(TSubclassOf<ABullet> bullet, FString ownerTag)
 {
 	UWorld* world = GetWorld();
-	FVector postion = RootComponent->GetComponentLocation() + FVector(0, 100, 0);
-	ABullet* instance = (ABullet*)world->SpawnActor(bullet, &postion);
+	FVector position = RootComponent->GetComponentLocation() + FVector(0, 100, 0);
+	FRotator rotation = RootComponent->GetRelativeRotation();
+	ABullet* instance = (ABullet*)world->SpawnActor(bullet);
+	instance->SetLocation(position);
+	instance->SetRotator(_bulletRotation);
 	instance->SetOwnerTag(ownerTag);
+	instance->StartPhysics();
 }
 

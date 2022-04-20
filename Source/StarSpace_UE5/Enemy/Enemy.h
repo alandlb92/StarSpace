@@ -19,22 +19,27 @@ public:
 	AEnemy();
 
 	UFUNCTION()
-	virtual void  BulletReaction(AActor* BulletToReact) override;
+		virtual void  BulletReaction(AActor* BulletToReact) override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UPaperSpriteComponent* _enemySprite;
-	
+
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void Shoot();
 
 private:
+	static const FString OwnerTag;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACannon> _cannonRef;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ABullet> _bulletRef;
 
 	int _health;
 	FString _tag;

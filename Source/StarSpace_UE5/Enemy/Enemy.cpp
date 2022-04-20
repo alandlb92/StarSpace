@@ -6,6 +6,8 @@
 #include "../Utilitils/IdUtils.h"
 #include "Components/ChildActorComponent.h"
 
+const FString  AEnemy::OwnerTag = FString(TEXT("Enemy"));
+
 // Sets default values
 AEnemy::AEnemy()
 {
@@ -26,20 +28,16 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 	_tag = TEXT("Enemy");
 	_id = IdUtils::GetNewId();
-	TArray<UChildActorComponent*> cannonsLocations;
-	GetComponents(cannonsLocations, true);
 
+	TArray<UChildActorComponent*> cannonsChilds;
+	GetComponents(cannonsChilds, true);
 	UWorld* world = GetWorld();
-	for (auto location : cannonsLocations)
-	{
-		AActor* instance = world->SpawnActor(_cannonRef);
-		instance->AttachToComponent(_enemySprite, FAttachmentTransformRules::KeepRelativeTransform);
-		FVector position = location->GetRelativeLocation();
-		position.Y = 5;
-		instance->SetActorRelativeLocation(position);
 
-		instance->SetActorRelativeScale3D(FVector(1 / _enemySprite->GetRelativeScale3D().X));
-		_cannons.Add((ACannon*)instance);
+	for (UChildActorComponent* child : cannonsChilds)
+	{		
+		ACannon* cannon = (ACannon*)child->GetChildActor();
+		cannon->SetBulletRotation(child->GetComponentRotation());
+		_cannons.Add(cannon);
 	}
 }
 
@@ -50,9 +48,26 @@ void AEnemy::Tick(float DeltaTime)
 
 }
 
+void AEnemy::Shoot()
+{
+	for (ACannon* cannon : _cannons)
+	{
+		if (_bulletRef != nullptr)
+			cannon->Shoot(_bulletRef, OwnerTag);
+	}
+}
+
 void AEnemy::BulletReaction(AActor* BulletToReact)
 {
 	UE_LOG(LogTemp, Warning, TEXT("BulletReaction -> AEnemyBase"));
-	BulletToReact->Destroy();
-	Destroy();
+
+	if (!Cast<ABullet>(BulletToReact)->CompareTag(OwnerTag))
+	{
+		BulletToReact->Destroy();
+		for (ACannon* cannon : _cannons)
+		{
+			cannon->Destroy();
+		}
+		Destroy();
+	}
 }

@@ -70,6 +70,9 @@ private:
 	int _speed;
 
 	UPROPERTY(EditAnywhere)
+	int _cannonsLevel = 1;
+
+	UPROPERTY(EditAnywhere)
 	int _currentHeating;
 	UPROPERTY(EditAnywhere)
 	int _maxHeating;
@@ -80,6 +83,7 @@ private:
 
 	APlayerController* _playerController;
 	class APlayerHUD* _playerHUD;
+	void AttachCannons();
 	void Move();
 	void ClampSpaceShipPosition();
 	void StartShoot();

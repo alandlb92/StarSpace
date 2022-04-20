@@ -57,17 +57,26 @@ void APlayerSpaceship::BeginPlay()
 
 	if (_world)
 	{
-		AActor* instance = _world->SpawnActor(_cannonRef);
-		instance->AttachToComponent(_bodySprite, FAttachmentTransformRules::KeepRelativeTransform);
-		instance->SetActorRelativeLocation(FVector(0, 0, 50));
-		_cannons.Add((ACannon*)instance);
-
 		_playerController = _world->GetFirstPlayerController();
 		_playerHUD = Cast<APlayerHUD>(_playerController->GetHUD());
 		_currentHeating = 0;
 		_playerHUD->UpdatePlayerHeat(_currentHeating, _maxHeating);
+		AttachCannons();
 	}
+}
 
+void APlayerSpaceship::AttachCannons()
+{
+	TArray<UChildActorComponent*> cannonsChilds;
+	GetComponents(cannonsChilds, true);
+	int level = 1;
+
+	for (UChildActorComponent* child : cannonsChilds)
+	{
+		ACannon* cannon = (ACannon*)child->GetChildActor();
+		cannon->SetBulletRotation(child->GetComponentRotation());
+		_cannons.Add(cannon);
+	}
 }
 
 // Called every frame
@@ -118,7 +127,7 @@ void APlayerSpaceship::ClampSpaceShipPosition()
 	FVector newPosition = GetActorLocation();
 
 	double xAdjustments = _bodySprite->GetSprite()->GetSourceSize().X / 2;
-	double zAdjustments = _bodySprite->GetSprite()->GetSourceSize().Y/ 2;
+	double zAdjustments = _bodySprite->GetSprite()->GetSourceSize().Y / 2;
 
 	newPosition.X = FMath::Clamp<double>(newPosition.X, minPositions.X + xAdjustments, maxPositions.X - xAdjustments);
 	newPosition.Z = FMath::Clamp<double>(newPosition.Z, minPositions.Z + zAdjustments, maxPositions.Z - zAdjustments);
@@ -140,9 +149,10 @@ void APlayerSpaceship::Shoot()
 {
 	for (ACannon* cannon : _cannons)
 	{
-		cannon->Shoot(_bulletRef, OwnerTag);
-		Heating();
+		if (cannon != nullptr)
+			cannon->Shoot(_bulletRef, OwnerTag);
 	}
+	Heating();
 	_canShoot = false;
 }
 
