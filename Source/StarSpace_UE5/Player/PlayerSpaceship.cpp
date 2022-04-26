@@ -6,7 +6,7 @@
 #include "PaperSpriteComponent.h"
 #include "PaperSprite.h"
 #include "Camera/CameraComponent.h"
-#include "../Utilitils/LocationUtils.h"
+#include "../Utils/LocationUtils.h"
 #include "../UI/PlayerHUD.h"
 
 const FString  APlayerSpaceship::OwnerTag = FString(TEXT("Player"));

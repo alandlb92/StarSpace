@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "../Cannon/Cannon.h"
 #include "../Bullet/Bullet.h"
+#include "../Data/PlayerConfiguration.h"
 #include "PlayerSpaceship.generated.h"
 
 USTRUCT(BlueprintType)
@@ -31,14 +32,9 @@ class STARSPACE_UE5_API APlayerSpaceship : public APawn
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
 	APlayerSpaceship();
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	// Called every frame
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;	
 	virtual void Tick(float DeltaTime) override;
-
-
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UPaperSpriteComponent* _bodySprite;
@@ -53,6 +49,8 @@ protected:
 private:
 	static const FString OwnerTag;
 	const float TimeBetweenShoots = .2f;
+	PlayerConfiguration PlayerConfiguration;
+
 	float _counter;
 	UWorld* _world;
 

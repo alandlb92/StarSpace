@@ -4,7 +4,7 @@
 #include "Bullet.h"
 #include "PaperSpriteComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "../Utilitils/LocationUtils.h"
+#include "../Utils/LocationUtils.h"
 
 // Sets default values
 ABullet::ABullet()

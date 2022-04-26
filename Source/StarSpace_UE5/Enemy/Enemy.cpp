@@ -3,7 +3,7 @@
 
 #include "Enemy.h"
 #include "PaperSpriteComponent.h"
-#include "../Utilitils/IdUtils.h"
+#include "../Utils/IdUtils.h"
 #include "Components/ChildActorComponent.h"
 
 const FString  AEnemy::OwnerTag = FString(TEXT("Enemy"));
