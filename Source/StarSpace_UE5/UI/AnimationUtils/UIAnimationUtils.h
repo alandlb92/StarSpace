@@ -4,10 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "UIAnimationBase.h"
+#include "ColorAnimationUI.h"
 
-class STARSPACE_UE5_API UIAnimationUtils : public UIAnimationBase
+class STARSPACE_UE5_API UIAnimationUtils
 {
 public:
-	void Initialize() override;
-	void Tick(float DeltaTime) override;
+	UIAnimationUtils();
+	bool Tick(float DeltaTime);
+	ColorAnimationUI* GetColorAnimationUI() { return _colorAnimationUI; }
+	void LogOut();
+
+
+private:
+	ColorAnimationUI* _colorAnimationUI;
+	FTickerDelegate _tickDelegate;
+	FTSTicker::FDelegateHandle _tickDelegateHandle;
 };

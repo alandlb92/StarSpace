@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Math/Color.h"
 #include "Components/Button.h"
+#include "AnimationUtils/ColorAnimationUI.h"
 #include "MainMenuWidget.generated.h"
 
 /**
@@ -31,6 +32,8 @@ public:
 	FLinearColor NormalColor;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FLinearColor SelectedColor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FLinearColor BlinkColor;
 
 protected:
 	void InitializeInputComponent() override;
@@ -41,14 +44,20 @@ private:
 	bool _canMoveMenu = true;
 
 	void CaptureAxis(float);
+	void SelectButton();
 
 	void SetButtonSelected(UButton*);
 	void UpdateButtonSelectedStyles();
 	void SelectDownMenuOption();
 	void SelectUpMenuOption();
+	ColorAnimationUI* GetAnimationUtils();
 
+	UFUNCTION()
 	void NewGame();
+	UFUNCTION()
 	void LoadGame();
+	UFUNCTION()
 	void Options();
+	UFUNCTION()
 	void Exit();
 };

@@ -3,12 +3,26 @@
 
 #include "UIAnimationUtils.h"
 
-void UIAnimationUtils::Initialize()
+UIAnimationUtils::UIAnimationUtils()
 {
-	UIAnimationBase::Initialize();
+	_colorAnimationUI = new ColorAnimationUI();
+	_colorAnimationUI->Initialize();
+	
+	_tickDelegate = FTickerDelegate::CreateRaw(this, &UIAnimationUtils::Tick);
+	_tickDelegateHandle = FTSTicker::GetCoreTicker().AddTicker(_tickDelegate);
+
 }
 
-void UIAnimationUtils::Tick(float DeltaTime)
+void UIAnimationUtils::LogOut()
 {
-	UIAnimationBase::Tick(DeltaTime);
+	FTSTicker::GetCoreTicker().RemoveTicker(_tickDelegateHandle);
+	_colorAnimationUI->LogOut();
+	delete _colorAnimationUI;
+	_colorAnimationUI = NULL;
+}
+
+bool UIAnimationUtils::Tick(float DeltaTime)
+{
+	_colorAnimationUI->Tick(DeltaTime);
+	return true;
 }

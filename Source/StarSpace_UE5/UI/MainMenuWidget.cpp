@@ -1,6 +1,8 @@
 
 #include "MainMenuWidget.h"
 #include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
+#include "../StarSpace_UE5GameModeBase.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
@@ -18,13 +20,40 @@ void UMainMenuWidget::NativeConstruct()
 	SetButtonSelected(_buttons[0]);
 	UpdateButtonSelectedStyles();
 
+
+
 	InitializeInputComponent();
+}
+
+
+ColorAnimationUI* UMainMenuWidget::GetAnimationUtils()
+{
+	AStarSpace_UE5GameModeBase* gameMode = Cast<AStarSpace_UE5GameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (gameMode != nullptr)
+	{
+		UIAnimationUtils* AnimationUtils = gameMode->GetUIAnimationUtils();
+		if (AnimationUtils != nullptr)
+		{
+			return AnimationUtils->GetColorAnimationUI();
+		}
+	}
+
+	return nullptr;
 }
 
 void UMainMenuWidget::InitializeInputComponent()
 {
 	Super::InitializeInputComponent();
 	InputComponent->BindAxis("MoveY", this, &UMainMenuWidget::CaptureAxis);
+	InputComponent->BindAction("Shoot", IE_Released, this, &UMainMenuWidget::SelectButton);
+}
+
+void UMainMenuWidget::SelectButton()
+{
+	ButtonBlinkConfiguration blinkConfig = ButtonBlinkConfiguration(_buttonSelected, &SelectedColor, &BlinkColor, 5, 0.1f);
+	ColorAnimationUI* animUtils = GetAnimationUtils();
+	if(animUtils != nullptr)
+		animUtils->BlinkButton(blinkConfig);
 }
 
 void UMainMenuWidget::CaptureAxis(float value)
@@ -41,8 +70,6 @@ void UMainMenuWidget::CaptureAxis(float value)
 	}
 	else if (value > -0.1f && value < 0.1f)
 		_canMoveMenu = true;
-
-	UE_LOG(LogTemp, Warning, TEXT("CaptureAxis %f"), value);
 }
 
 void UMainMenuWidget::SetButtonSelected(UButton* buttonSelected)
@@ -73,7 +100,7 @@ void UMainMenuWidget::SelectDownMenuOption()
 
 void UMainMenuWidget::SelectUpMenuOption()
 {
-	int previousIndex = _buttons[0] == _buttonSelected ? _buttons.Num() - 1 
+	int previousIndex = _buttons[0] == _buttonSelected ? _buttons.Num() - 1
 		: _buttons.IndexOfByKey(_buttonSelected) - 1;
 
 	SetButtonSelected(_buttons[previousIndex]);
