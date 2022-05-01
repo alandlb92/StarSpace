@@ -35,6 +35,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FLinearColor BlinkColor;
 
+
 protected:
 	void InitializeInputComponent() override;
 
@@ -50,6 +51,7 @@ private:
 	void UpdateButtonSelectedStyles();
 	void SelectDownMenuOption();
 	void SelectUpMenuOption();
+	void CallSelectedButtonAction();
 	ColorAnimationUI* GetAnimationUtils();
 
 	UFUNCTION()

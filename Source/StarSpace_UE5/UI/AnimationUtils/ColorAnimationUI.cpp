@@ -15,13 +15,14 @@ BlinkButtonHandle::BlinkButtonHandle(ButtonBlinkConfiguration configuration, But
 ButtonBlinkConfiguration::ButtonBlinkConfiguration() {}
 
 ButtonBlinkConfiguration::ButtonBlinkConfiguration(UButton* button, FLinearColor* colorA,
-	FLinearColor* colorB, int howMuchBlinks, float timeBetwenBlinks)
+	FLinearColor* colorB, int howMuchBlinks, float timeBetwenBlinks, function<void()> callBack)
 {
 	Button = button;
 	ColorA = colorA;
 	ColorB = colorB;
 	HowMuchBlinks = howMuchBlinks;
 	TimeBetwenBlinks = timeBetwenBlinks;
+	CallBack = callBack;
 }
 
 ButtonBlinkState::ButtonBlinkState()
@@ -34,7 +35,7 @@ ButtonBlinkState::ButtonBlinkState()
 void ColorAnimationUI::Initialize()
 {
 	UIAnimationBase::Initialize();
-	UE_LOG(LogTemp, Warning, TEXT("ColorAnimationUI::Initialize"));	
+	UE_LOG(LogTemp, Warning, TEXT("ColorAnimationUI::Initialize"));
 }
 
 void  ColorAnimationUI::Tick(float DeltaTime)
@@ -58,7 +59,7 @@ void ColorAnimationUI::ExecuteMap(float DeltaTime)
 			value->State.Finished = true;
 			continue;
 		}
-		
+
 		value->State.TimeCounter += DeltaTime;
 
 		if (value->State.TimeCounter >= value->Configuration.TimeBetwenBlinks)
@@ -80,6 +81,8 @@ void ColorAnimationUI::CleanMap()
 	{
 		if (value->State.Finished) {
 			toRemove.push_back(key);
+			if (value->Configuration.CallBack != nullptr)
+				value->Configuration.CallBack();
 			delete value;
 			value = NULL;
 		}
@@ -95,7 +98,7 @@ void ColorAnimationUI::BlinkButton(ButtonBlinkConfiguration  buttonBlinkConfigur
 {
 	buttonBlinkConfiguration.Button->SetColorAndOpacity(*buttonBlinkConfiguration.ColorB);
 	ButtonBlinkState blinkState = ButtonBlinkState();
-	BlinkButtonHandle* handle = new BlinkButtonHandle(buttonBlinkConfiguration, blinkState);	
+	BlinkButtonHandle* handle = new BlinkButtonHandle(buttonBlinkConfiguration, blinkState);
 	_executionHandle.insert(pair<int, BlinkButtonHandle*>(IdUtils::GetNewId(), handle));
 }
 

@@ -25,6 +25,13 @@ void UMainMenuWidget::NativeConstruct()
 	InitializeInputComponent();
 }
 
+void UMainMenuWidget::InitializeInputComponent()
+{
+	Super::InitializeInputComponent();
+	InputComponent->BindAxis("MoveY", this, &UMainMenuWidget::CaptureAxis);
+	InputComponent->BindAction("Shoot", IE_Pressed, this, &UMainMenuWidget::SelectButton);
+}
+
 
 ColorAnimationUI* UMainMenuWidget::GetAnimationUtils()
 {
@@ -41,16 +48,17 @@ ColorAnimationUI* UMainMenuWidget::GetAnimationUtils()
 	return nullptr;
 }
 
-void UMainMenuWidget::InitializeInputComponent()
+void UMainMenuWidget::CallSelectedButtonAction()
 {
-	Super::InitializeInputComponent();
-	InputComponent->BindAxis("MoveY", this, &UMainMenuWidget::CaptureAxis);
-	InputComponent->BindAction("Shoot", IE_Released, this, &UMainMenuWidget::SelectButton);
+	_buttonSelected->OnClicked.Broadcast();
+	InitializeInputComponent();
 }
 
 void UMainMenuWidget::SelectButton()
 {
-	ButtonBlinkConfiguration blinkConfig = ButtonBlinkConfiguration(_buttonSelected, &SelectedColor, &BlinkColor, 5, 0.1f);
+	InputComponent->ClearActionBindings();
+	InputComponent->AxisBindings.Empty();
+	ButtonBlinkConfiguration blinkConfig = ButtonBlinkConfiguration(_buttonSelected, &SelectedColor, &BlinkColor, 5, 0.1f, bind(&UMainMenuWidget::CallSelectedButtonAction, this));
 	ColorAnimationUI* animUtils = GetAnimationUtils();
 	if(animUtils != nullptr)
 		animUtils->BlinkButton(blinkConfig);
@@ -106,6 +114,7 @@ void UMainMenuWidget::SelectUpMenuOption()
 	SetButtonSelected(_buttons[previousIndex]);
 	UpdateButtonSelectedStyles();
 }
+
 
 void UMainMenuWidget::NewGame()
 {

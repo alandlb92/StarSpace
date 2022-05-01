@@ -15,11 +15,12 @@ struct ButtonBlinkConfiguration
 	FLinearColor* ColorB;
 	int HowMuchBlinks;
 	float TimeBetwenBlinks;
+	function<void()> CallBack;	
 
 	ButtonBlinkConfiguration();
 
 	ButtonBlinkConfiguration (UButton* button, FLinearColor* colorA,
-		FLinearColor* colorB, int howMuchBlinks, float timeBetwenBlinks);
+		FLinearColor* colorB, int howMuchBlinks, float timeBetwenBlinks, function<void()> callBack);
 };
 
 struct ButtonBlinkState
