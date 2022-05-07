@@ -8,10 +8,24 @@ void AMainMenuHUD::BeginPlay()
 {
 	if (_mainMenuWidgetClass)
 	{
-		_mainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), _mainMenuWidgetClass);
-		if (_mainMenuWidget != nullptr)
+		_mainMenuWidgetInstance = CreateWidget<UMainMenuWidget>(GetWorld(), _mainMenuWidgetClass);
+		if (_mainMenuWidgetInstance != nullptr)
 		{
-			_mainMenuWidget->AddToViewport();
+			_mainMenuWidgetInstance->AddToViewport();
 		}
 	}
+}
+
+void AMainMenuHUD::OpenOptions()
+{
+	if (_optionsWidgetClass)
+	{
+		_optionsWidgetInstance = CreateWidget<UMainOptionWidget>(GetWorld(), _optionsWidgetClass);
+		if (_optionsWidgetInstance != nullptr)
+		{
+			_optionsWidgetInstance->AddToViewport();
+		}
+	}
+	else
+		_optionsWidgetInstance->Open();
 }

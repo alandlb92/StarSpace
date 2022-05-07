@@ -20,9 +20,7 @@ public:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UButton* NewGame_btn;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UButton* LoadGame_btn;
+	UButton* PlayGame_btn;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* Options_btn;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
@@ -37,7 +35,9 @@ public:
 
 
 protected:
+	UFUNCTION(BluePrintCallable, category = "Main Menu Widget")
 	void InitializeInputComponent() override;
+
 
 private:
 	TArray<UButton*> _buttons;
@@ -55,9 +55,7 @@ private:
 	ColorAnimationUI* GetAnimationUtils();
 
 	UFUNCTION()
-	void NewGame();
-	UFUNCTION()
-	void LoadGame();
+	void PlayGame();
 	UFUNCTION()
 	void Options();
 	UFUNCTION()

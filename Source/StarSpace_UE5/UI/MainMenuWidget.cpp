@@ -2,27 +2,22 @@
 #include "MainMenuWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "MainMenuHUD.h"
 #include "../StarSpace_UE5GameModeBase.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	NewGame_btn->OnClicked.AddDynamic(this, &UMainMenuWidget::NewGame);
-	LoadGame_btn->OnClicked.AddDynamic(this, &UMainMenuWidget::LoadGame);
+	PlayGame_btn->OnClicked.AddDynamic(this, &UMainMenuWidget::PlayGame);
 	Options_btn->OnClicked.AddDynamic(this, &UMainMenuWidget::Options);
 	Exit_btn->OnClicked.AddDynamic(this, &UMainMenuWidget::Exit);
 
-	_buttons.Add(NewGame_btn);
-	_buttons.Add(LoadGame_btn);
+	_buttons.Add(PlayGame_btn);
 	_buttons.Add(Options_btn);
 	_buttons.Add(Exit_btn);
 
 	SetButtonSelected(_buttons[0]);
 	UpdateButtonSelectedStyles();
-
-
-
-	InitializeInputComponent();
 }
 
 void UMainMenuWidget::InitializeInputComponent()
@@ -51,7 +46,6 @@ ColorAnimationUI* UMainMenuWidget::GetAnimationUtils()
 void UMainMenuWidget::CallSelectedButtonAction()
 {
 	_buttonSelected->OnClicked.Broadcast();
-	InitializeInputComponent();
 }
 
 void UMainMenuWidget::SelectButton()
@@ -116,22 +110,22 @@ void UMainMenuWidget::SelectUpMenuOption()
 }
 
 
-void UMainMenuWidget::NewGame()
+void UMainMenuWidget::PlayGame()
 {
-	UE_LOG(LogTemp, Warning, TEXT("NEW GAME"));
+	UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+	UGameplayStatics::OpenLevel(GameInstance, FName("GamePlay"));
+	//loading
+	/*ILoadingScreenModule& LoadingScreenModule = ILoadingScreenModule::Get();
+	LoadingScreenModule.StartInGameLoadingScreen(false, 5);*/
 }
 
-void UMainMenuWidget::LoadGame()
-{
-	UE_LOG(LogTemp, Warning, TEXT("LOAD GAME"));
-}
 
 void UMainMenuWidget::Options()
 {
-	UE_LOG(LogTemp, Warning, TEXT("OPTIONS"));
+	Cast<AMainMenuHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->OpenOptions();
 }
 
 void UMainMenuWidget::Exit()
 {
-	UE_LOG(LogTemp, Warning, TEXT("EXIT"));
+	UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
 }

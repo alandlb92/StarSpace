@@ -2,6 +2,9 @@
 
 
 #include "StarSpace_UE5GameModeBase.h"
+#include "Kismet/GameplayStatics.h"
+#include "../LoadingScreen/Public/LoadingScreen.h"
+
 void AStarSpace_UE5GameModeBase::StartPlay()
 {
 	//Callet before alls begin play
@@ -16,4 +19,3 @@ void AStarSpace_UE5GameModeBase::Logout(AController* Exiting)
 	delete _UIAnimationUtils;
 	_UIAnimationUtils = NULL;
 }
-

@@ -5,16 +5,19 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "UI/AnimationUtils/UIAnimationUtils.h"
+#include "Engine/StreamableManager.h"
+#include "../LoadingScreen/Public/LoadingScreen.h"
 #include "StarSpace_UE5GameModeBase.generated.h"
 
 /**
  *
  */
+
 UCLASS()
 class STARSPACE_UE5_API AStarSpace_UE5GameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-public:
+public:	
 	UIAnimationUtils* GetUIAnimationUtils() { return _UIAnimationUtils; }
 
 protected:
