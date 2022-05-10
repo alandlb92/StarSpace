@@ -18,6 +18,7 @@ class STARSPACE_UE5_API AMainMenuHUD : public AHUD
 public:
 	virtual void BeginPlay() override;
 	void OpenOptions();
+	void BackToMain();
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UMainMenuWidget> _mainMenuWidgetClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
