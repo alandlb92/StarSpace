@@ -126,8 +126,8 @@ void APlayerSpaceship::ClampSpaceShipPosition()
 	FVector minPositions = LocationUtils::GetLeftBottonFirstPlayerScreenWorldposition(_world);
 	FVector newPosition = GetActorLocation();
 
-	double xAdjustments = _bodySprite->GetSprite()->GetSourceSize().X / 2;
-	double zAdjustments = _bodySprite->GetSprite()->GetSourceSize().Y / 2;
+	double xAdjustments = _bodySprite->GetSprite()->GetRenderBounds().GetBox().GetSize().X / 2;
+	double zAdjustments = _bodySprite->GetSprite()->GetRenderBounds().GetBox().GetSize().Y / 2;
 
 	newPosition.X = FMath::Clamp<double>(newPosition.X, minPositions.X + xAdjustments, maxPositions.X - xAdjustments);
 	newPosition.Z = FMath::Clamp<double>(newPosition.Z, minPositions.Z + zAdjustments, maxPositions.Z - zAdjustments);

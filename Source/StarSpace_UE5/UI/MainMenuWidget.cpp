@@ -20,11 +20,12 @@ void UMainMenuWidget::NativeConstruct()
 
 void UMainMenuWidget::PlayGame()
 {
-	UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
-	UGameplayStatics::OpenLevel(GameInstance, FName("GamePlay"));
 	//loading
-	/*ILoadingScreenModule& LoadingScreenModule = ILoadingScreenModule::Get();
-	LoadingScreenModule.StartInGameLoadingScreen(false, 5);*/
+	Close(NULL);
+	ILoadingScreenModule& LoadingScreenModule = ILoadingScreenModule::Get();
+	LoadingScreenModule.StartInGameLoadingScreen(true, 50);
+	UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+	UGameplayStatics::OpenLevel(GameInstance, FName("GamePlay"));	
 }
 
 void UMainMenuWidget::Options()

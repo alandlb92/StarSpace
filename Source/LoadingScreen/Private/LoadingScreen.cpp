@@ -131,4 +131,4 @@ public:
 
 };
 
-IMPLEMENT_GAME_MODULE( FDefaultGameModuleImpl, LoadingScreen );
+IMPLEMENT_GAME_MODULE( FLoadingScreenModule, LoadingScreen );
