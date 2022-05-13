@@ -20,6 +20,9 @@ class STARSPACE_UE5_API UMenuBase : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isHorizontalMenu = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FLinearColor NormalColor;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FLinearColor SelectedColor;

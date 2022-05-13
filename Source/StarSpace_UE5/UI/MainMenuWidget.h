@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Math/Color.h"
 #include "MenuBase.h"
+#include "QuestionModal.h"
 #include "Components/Button.h"
 #include "AnimationUtils/ColorAnimationUI.h"
 #include "MainMenuWidget.generated.h"
@@ -34,4 +35,5 @@ private:
 	void Options();
 	UFUNCTION()
 	void Exit();
+	void ModalExitResponse(QuestionModalResponse modalResponse);
 };

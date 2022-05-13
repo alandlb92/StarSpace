@@ -8,6 +8,7 @@
 void UMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
 	PlayGame_btn->OnClicked.AddDynamic(this, &UMainMenuWidget::PlayGame);
 	Options_btn->OnClicked.AddDynamic(this, &UMainMenuWidget::Options);
 	Exit_btn->OnClicked.AddDynamic(this, &UMainMenuWidget::Exit);
@@ -25,7 +26,7 @@ void UMainMenuWidget::PlayGame()
 	ILoadingScreenModule& LoadingScreenModule = ILoadingScreenModule::Get();
 	LoadingScreenModule.StartInGameLoadingScreen(true, 50);
 	UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
-	UGameplayStatics::OpenLevel(GameInstance, FName("GamePlay"));	
+	UGameplayStatics::OpenLevel(GameInstance, FName("GamePlay"));
 }
 
 void UMainMenuWidget::Options()
@@ -35,5 +36,22 @@ void UMainMenuWidget::Options()
 
 void UMainMenuWidget::Exit()
 {
-	UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
+	QuestionModalConfiguration modalConfig = 
+	QuestionModalConfiguration(TEXT("Are you sure you want to quit the game?"), TEXT("YES"), TEXT("NO"), 
+		true, bind(&UMainMenuWidget::ModalExitResponse, this, std::placeholders::_1));
+
+	Cast<AMainMenuHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->ShowQuestionModal(modalConfig);
+}
+
+void UMainMenuWidget::ModalExitResponse(QuestionModalResponse modalResponse)
+{
+	if (modalResponse == QuestionModalResponse::PRYMARY)
+	{
+		UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
+	}
+	else
+	{
+		Cast<AMainMenuHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->CloseQuestionModal();
+		InitializeInputComponent();
+	}
 }

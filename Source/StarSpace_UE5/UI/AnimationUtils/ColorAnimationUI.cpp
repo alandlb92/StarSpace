@@ -35,7 +35,6 @@ ButtonBlinkState::ButtonBlinkState()
 void ColorAnimationUI::Initialize()
 {
 	UIAnimationBase::Initialize();
-	UE_LOG(LogTemp, Warning, TEXT("ColorAnimationUI::Initialize"));
 }
 
 void  ColorAnimationUI::Tick(float DeltaTime)
@@ -44,9 +43,7 @@ void  ColorAnimationUI::Tick(float DeltaTime)
 	if (!_executionHandle.empty())
 	{
 		ExecuteMap(DeltaTime);
-		UE_LOG(LogTemp, Warning, TEXT("Count Of Map %i"), _executionHandle.size());
 		CleanMap();
-		UE_LOG(LogTemp, Warning, TEXT("Count Of Map %i"), _executionHandle.size());
 	}
 }
 

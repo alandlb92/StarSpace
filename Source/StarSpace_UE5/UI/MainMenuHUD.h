@@ -6,13 +6,14 @@
 #include "GameFramework/HUD.h"
 #include "MainMenuWidget.h"
 #include "MainOptionWidget.h"
+#include "BaseHUD.h"
 #include "MainMenuHUD.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARSPACE_UE5_API AMainMenuHUD : public AHUD
+class STARSPACE_UE5_API AMainMenuHUD : public ABaseHUD
 {
 	GENERATED_BODY()
 public:

@@ -6,13 +6,14 @@
 #include "GameFramework/HUD.h"
 #include "Components/WidgetComponent.h"
 #include "HeatPlayerWidget.h"
+#include "BaseHUD.h"
 #include "PlayerHUD.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARSPACE_UE5_API APlayerHUD : public AHUD
+class STARSPACE_UE5_API APlayerHUD : public ABaseHUD
 {
 	GENERATED_BODY()
 public:

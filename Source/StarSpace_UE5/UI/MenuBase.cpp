@@ -64,7 +64,11 @@ void UMenuBase::OnOpenAnimationEnded()
 void UMenuBase::InitializeInputComponent()
 {
 	Super::InitializeInputComponent();
-	InputComponent->BindAxis("MoveY", this, &UMenuBase::CaptureAxis);
+	if (isHorizontalMenu)
+		InputComponent->BindAxis("MoveX", this, &UMenuBase::CaptureAxis);
+	else
+		InputComponent->BindAxis("MoveY", this, &UMenuBase::CaptureAxis);
+
 	InputComponent->BindAction("Shoot", IE_Pressed, this, &UMenuBase::SelectButton);
 }
 
