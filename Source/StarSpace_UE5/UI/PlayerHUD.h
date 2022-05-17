@@ -17,8 +17,6 @@ class STARSPACE_UE5_API APlayerHUD : public ABaseHUD
 {
 	GENERATED_BODY()
 public:
-	APlayerHUD();
-
 	virtual void DrawHUD() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

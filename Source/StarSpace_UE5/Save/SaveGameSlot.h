@@ -20,13 +20,15 @@ public:
 
 	FString FileName;
 
-	void SetGameConfiguration(GameConfiguration GameConfig);
-	void SetPlayerConfiguration(PlayerConfiguration PlayerConfig);
+	void SetGameConfiguration(FGameConfiguration GameConfig);
+	void SetPlayerConfiguration(FPlayerConfiguration PlayerConfig);
 
-	GameConfiguration GetGameConfiguration();
-	PlayerConfiguration GetPlayerConfiguration();
+	FGameConfiguration GetGameConfiguration();
+	FPlayerConfiguration GetPlayerConfiguration();
 
 private:
-	GameConfiguration _gameConfig;
-	PlayerConfiguration _playerConfig;
+	UPROPERTY(VisibleAnywhere, Category = Basic)
+	FGameConfiguration _gameConfig;
+	UPROPERTY(VisibleAnywhere, Category = Basic)
+	FPlayerConfiguration _playerConfig;
 };

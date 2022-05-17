@@ -6,6 +6,7 @@
 
 void AMainMenuHUD::BeginPlay()
 {
+	Super::BeginPlay();
 	if (_mainMenuWidgetClass)
 	{
 		if (_mainMenuWidgetInstance == nullptr)

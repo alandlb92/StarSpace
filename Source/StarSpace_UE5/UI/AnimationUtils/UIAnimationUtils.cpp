@@ -7,7 +7,7 @@ UIAnimationUtils::UIAnimationUtils()
 {
 	_colorAnimationUI = new ColorAnimationUI();
 	_colorAnimationUI->Initialize();
-	
+
 	_tickDelegate = FTickerDelegate::CreateRaw(this, &UIAnimationUtils::Tick);
 	_tickDelegateHandle = FTSTicker::GetCoreTicker().AddTicker(_tickDelegate);
 

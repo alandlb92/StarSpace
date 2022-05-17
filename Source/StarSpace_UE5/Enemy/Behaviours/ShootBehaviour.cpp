@@ -19,7 +19,6 @@ void UShootBehaviour::BeginPlay()
 {
 	Super::BeginPlay();
 	_enemy = Cast<AEnemy>(GetOwner());
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
 }
 
 
@@ -49,7 +48,7 @@ void UShootBehaviour::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("NOT FOUNT ENEMY"));
+		UE_LOG(LogTemp, Warning, TEXT("NOT FOUND ENEMY"));
 	}
 }
 

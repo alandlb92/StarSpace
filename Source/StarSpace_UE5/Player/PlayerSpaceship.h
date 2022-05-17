@@ -15,7 +15,7 @@ struct FSpaceShipInput
 	GENERATED_BODY()
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SpaceShip Input")
-		FVector2D MovementInput;
+	FVector2D MovementInput;
 
 	void Sanitize();
 	void MoveX(float AxisValue);
@@ -49,7 +49,7 @@ protected:
 private:
 	static const FString OwnerTag;
 	const float TimeBetweenShoots = .2f;
-	PlayerConfiguration PlayerConfiguration;
+	FPlayerConfiguration PlayerConfiguration;
 
 	float _counter;
 	UWorld* _world;

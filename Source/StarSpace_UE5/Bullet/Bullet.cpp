@@ -40,9 +40,6 @@ void ABullet::StartPhysics()
 	FVector velocity = UKismetMathLibrary::GetForwardVector(_bodySprite->GetComponentRotation() + FRotator(90, 0, 0)) * _speed;
 	velocity *= _bodySprite->GetComponentRotation().Yaw >= 180 ? -1 : 1;
 
-	UE_LOG(LogTemp, Warning, TEXT("StartPhysics ---> %s"), *_bodySprite->GetComponentRotation().ToString());
-	UE_LOG(LogTemp, Warning, TEXT("VELOCITy ---> %s"), *velocity.ToString());
-
 	_bodySprite->SetAllPhysicsLinearVelocity(velocity);
 	_bodySprite->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapBegin);
 	_bodySprite->OnComponentEndOverlap.AddDynamic(this, &ABullet::OnOverlapEnd);
@@ -56,9 +53,7 @@ void ABullet::SetLocation(FVector pos)
 
 void ABullet::SetRotator(FRotator rot)
 {
-	UE_LOG(LogTemp, Warning, TEXT(" ---> %s"), *rot.ToString());
 	_bodySprite->SetWorldRotation(rot);
-	UE_LOG(LogTemp, Warning, TEXT(" ---> %s"), *_bodySprite->GetComponentRotation().ToString());
 }
 
 // Called every frame
@@ -84,7 +79,6 @@ bool ABullet::CompareTag(FString tag)
 
 void ABullet::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin"));
 	IBulletReaction* iBulletReaction = Cast<IBulletReaction>(OtherActor);
 	if (iBulletReaction)
 	{

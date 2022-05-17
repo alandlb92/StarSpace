@@ -7,22 +7,22 @@ USaveGameSlot::USaveGameSlot()
 	FileName = TEXT("starSpaceData");
 }
 
-void USaveGameSlot::SetGameConfiguration(GameConfiguration GameConfig)
+void USaveGameSlot::SetGameConfiguration(FGameConfiguration GameConfig)
 {
-	_gameConfig = GameConfig;
+	_gameConfig = new FGameConfiguration(GameConfig);
 }
 
-void USaveGameSlot::SetPlayerConfiguration(PlayerConfiguration PlayerConfig)
+void USaveGameSlot::SetPlayerConfiguration(FPlayerConfiguration PlayerConfig)
 {
-	_playerConfig = PlayerConfig;
+	_playerConfig = new FPlayerConfiguration(PlayerConfig);
 }
 
-GameConfiguration USaveGameSlot::GetGameConfiguration()
+FGameConfiguration USaveGameSlot::GetGameConfiguration()
 {
 	return _gameConfig;
 }
 
-PlayerConfiguration USaveGameSlot::GetPlayerConfiguration()
+FPlayerConfiguration USaveGameSlot::GetPlayerConfiguration()
 {
 	return _playerConfig;
 }

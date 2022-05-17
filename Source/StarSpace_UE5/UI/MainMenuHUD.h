@@ -23,7 +23,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UMainMenuWidget> _mainMenuWidgetClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UMainOptionWidget> _optionsWidgetClass;
+	TSubclassOf<UMainOptionWidget> _optionsWidgetClass;	
 
 private:
 	UMainMenuWidget* _mainMenuWidgetInstance;

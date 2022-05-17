@@ -1,18 +1,24 @@
 #pragma once
-struct  GameConfiguration
+#include "GameConfiguration.generated.h"
+
+USTRUCT()
+struct FGameConfiguration
 {
+	GENERATED_USTRUCT_BODY()
 public:
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	bool MusicOn;
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	bool SoundFXOn;
 
-	GameConfiguration()
+	FGameConfiguration()
 	{
 		MusicOn = true;
 		SoundFXOn = true;
 	}
 
 
-	GameConfiguration(GameConfiguration* gameConfiguration)
+	FGameConfiguration(FGameConfiguration* gameConfiguration)
 	{
 		MusicOn = gameConfiguration->MusicOn;
 		SoundFXOn = gameConfiguration->SoundFXOn;

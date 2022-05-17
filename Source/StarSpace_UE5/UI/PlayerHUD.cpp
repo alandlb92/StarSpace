@@ -3,14 +3,9 @@
 
 #include "PlayerHUD.h"
 
-
-APlayerHUD::APlayerHUD()
-{
-
-}
-
 void APlayerHUD::BeginPlay()
 {
+	Super::BeginPlay();
 	if (_heatPlayerWidgetClass)
 	{
 		_heatPlayerWidget = CreateWidget<UHeatPlayerWidget>(GetWorld(), _heatPlayerWidgetClass);
@@ -32,13 +27,8 @@ void APlayerHUD::DrawHUD()
 
 void APlayerHUD::UpdatePlayerHeat(int currentHeat, int maxHeat)
 {
-	UE_LOG(LogTemp, Warning, TEXT("current: %i , max: %i"), currentHeat, maxHeat);
-
 	float currentHeatFloat = currentHeat;
 	float maxHeatFloat = maxHeat;
-
-	UE_LOG(LogTemp, Warning, TEXT("current: %f , max: %f"), currentHeatFloat, maxHeatFloat);
-
 
 	float currentHeatPercentage = currentHeatFloat / maxHeatFloat;
 

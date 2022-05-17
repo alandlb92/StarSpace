@@ -89,7 +89,6 @@ class FLoadingScreenModule : public ILoadingScreenModule
 public:
 	virtual void StartupModule() override
 	{
-		UE_LOG(LogTemp, Warning, TEXT("StartupModule"));
 		// Force load for cooker reference
 		LoadObject<UObject>(nullptr, TEXT("/Game/Textures/ui/StarSpaceLogo.StarSpaceLogo"));
 

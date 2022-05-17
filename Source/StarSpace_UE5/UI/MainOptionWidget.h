@@ -7,6 +7,8 @@
 #include "Components/Button.h"
 #include "Components/CheckBox.h"
 #include "MenuBase.h"
+#include "../StarSpaceGameState.h"
+#include "QuestionModal.h"
 #include "MainOptionWidget.generated.h"
 
 /**
@@ -18,8 +20,8 @@ class STARSPACE_UE5_API UMainOptionWidget : public UMenuBase
 	GENERATED_BODY()
 public:
 	virtual void NativeConstruct() override;
-
-
+	//When open need to mount the interface using the GameState
+	void Open(function<void()> FinisehdAnimationEvent) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* Music_btn;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
@@ -28,6 +30,11 @@ public:
 	UButton* ClearData_btn;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* Back_btn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UCheckBox* Music_bool;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UCheckBox* SoundFX_bool;
 
 private:
 	UFUNCTION()
@@ -39,4 +46,7 @@ private:
 	UFUNCTION()
 	void Back();
 
+	void SyncDataWithMenu();
+	void ModalClearDataResponse(QuestionModalResponse modalResponse);
+	AStarSpaceGameState* GetGameState();
 };

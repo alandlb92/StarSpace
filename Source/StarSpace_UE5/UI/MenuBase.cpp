@@ -4,6 +4,7 @@
 #include "MenuBase.h"
 #include "../StarSpace_UE5GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "BaseHUD.h"
 
 void UMenuBase::NativeConstruct()
 {
@@ -41,24 +42,18 @@ void UMenuBase::OnOpenAnimationStarted()
 {
 	if (AnimationStartedEvent != NULL)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OnOpenAnimationStarted call event"));
 		AnimationStartedEvent();
 		AnimationStartedEvent = NULL;
 	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("OnOpenAnimationStarted not event"));
 }
 
 void UMenuBase::OnOpenAnimationEnded()
 {
 	if (AnimationEndedEvent != NULL)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OnOpenAnimationEnded call event"));
 		AnimationEndedEvent();
 		AnimationEndedEvent = NULL;
 	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("OnOpenAnimationEnded not event"));
 }
 
 void UMenuBase::InitializeInputComponent()
@@ -144,10 +139,10 @@ void UMenuBase::CallSelectedButtonAction()
 
 ColorAnimationUI* UMenuBase::GetAnimationUtils()
 {
-	AStarSpace_UE5GameModeBase* gameMode = Cast<AStarSpace_UE5GameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	if (gameMode != nullptr)
+	ABaseHUD* baseHud = Cast<ABaseHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	if (baseHud != nullptr)
 	{
-		UIAnimationUtils* AnimationUtils = gameMode->GetUIAnimationUtils();
+		UIAnimationUtils* AnimationUtils = baseHud->GetUIAnimationUtils();
 		if (AnimationUtils != nullptr)
 		{
 			return AnimationUtils->GetColorAnimationUI();

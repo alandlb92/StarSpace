@@ -4,6 +4,20 @@
 #include "BaseHUD.h"
 
 
+
+void ABaseHUD::BeginPlay()
+{
+	Super::BeginPlay();
+	_UIAnimationUtils = new UIAnimationUtils();
+}
+
+void ABaseHUD::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	if (_UIAnimationUtils != nullptr)
+		_UIAnimationUtils->LogOut();
+}
+
 void ABaseHUD::ShowQuestionModal(QuestionModalConfiguration questionConfig)
 {
 	if (_questionModalReference)

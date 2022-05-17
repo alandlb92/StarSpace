@@ -1,15 +1,26 @@
 #pragma once
-struct  PlayerConfiguration
+
+#include "PlayerConfiguration.generated.h"
+
+USTRUCT()
+struct FPlayerConfiguration
 {
+	GENERATED_USTRUCT_BODY()
 public:
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	bool FowardCannon;
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	bool AngleCannon;
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	bool SideCannon;
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	int Speed;
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	int MaxHeating;
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	int BulletLevel;
 
-	PlayerConfiguration()
+	FPlayerConfiguration()
 	{
 		FowardCannon = false;
 		AngleCannon = false;
@@ -19,7 +30,7 @@ public:
 		BulletLevel = 1;
 	}
 
-	PlayerConfiguration(PlayerConfiguration* playerConfiguration)
+	FPlayerConfiguration(FPlayerConfiguration* playerConfiguration)
 	{
 		FowardCannon = playerConfiguration->FowardCannon;
 		AngleCannon = playerConfiguration->AngleCannon;
