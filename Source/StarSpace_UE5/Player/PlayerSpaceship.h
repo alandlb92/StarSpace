@@ -7,6 +7,7 @@
 #include "../Cannon/Cannon.h"
 #include "../Bullet/Bullet.h"
 #include "../Data/PlayerConfiguration.h"
+#include "../LevelsGameMode.h"
 #include "PlayerSpaceship.generated.h"
 
 USTRUCT(BlueprintType)
@@ -49,13 +50,12 @@ protected:
 private:
 	static const FString OwnerTag;
 	const float TimeBetweenShoots = .2f;
-	FPlayerConfiguration PlayerConfiguration;
-
-	float _counter;
-	UWorld* _world;
 
 	void MoveY(float axisValue);
 	void MoveX(float axisValue);
+
+	float _counter;
+	UWorld* _world;
 	TArray<ACannon*> _cannons;
 
 	UPROPERTY(EditAnywhere)
@@ -79,9 +79,11 @@ private:
 	bool _canShoot;
 	bool _canCoolDown;
 
+	ALevelsGameMode* _levelGameMode;
 	APlayerController* _playerController;
 	class APlayerHUD* _playerHUD;
-	void AttachCannons();
+
+	void ConfigureActiveCannons();
 	void Move();
 	void ClampSpaceShipPosition();
 	void StartShoot();
@@ -91,5 +93,6 @@ private:
 	void CountTimeToCoolDown(float);
 	void Heating();
 	void CoolDown();
+	void AddToCannonListIfNecessary(ACannon* cannon, UChildActorComponent* child);
 
 };

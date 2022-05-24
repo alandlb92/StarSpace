@@ -38,6 +38,9 @@ void ACannon::SetBulletRotation(FRotator rot)
 
 void ACannon::Shoot(TSubclassOf<ABullet> bullet, FString ownerTag)
 {
+	if (!_cannonSprite->IsVisible())
+		return;
+
 	UWorld* world = GetWorld();
 	FVector position = RootComponent->GetComponentLocation() + FVector(0, 100, 0);
 	FRotator rotation = RootComponent->GetRelativeRotation();
@@ -48,3 +51,8 @@ void ACannon::Shoot(TSubclassOf<ABullet> bullet, FString ownerTag)
 	instance->StartPhysics();
 }
 
+void ACannon::Activate(bool enable)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Activate %S"), enable ? "TRUE" : "FALSE");
+	_cannonSprite->SetVisibility(enable, true);
+}

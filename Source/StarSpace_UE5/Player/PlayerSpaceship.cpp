@@ -61,23 +61,52 @@ void APlayerSpaceship::BeginPlay()
 		_playerHUD = Cast<APlayerHUD>(_playerController->GetHUD());
 		_currentHeating = 0;
 		_playerHUD->UpdatePlayerHeat(_currentHeating, _maxHeating);
-		AttachCannons();
+
+		_levelGameMode = _world->GetAuthGameMode<ALevelsGameMode>();
+		if (_levelGameMode)
+		{
+			_levelGameMode->AddOnLoadCallBack(bind(&APlayerSpaceship::ConfigureActiveCannons, this));
+			_levelGameMode->VerifyLoadingState();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Level GameMode not found"));
+		}
 	}
 }
 
-void APlayerSpaceship::AttachCannons()
+void  APlayerSpaceship::ConfigureActiveCannons()
 {
 	TArray<UChildActorComponent*> cannonsChilds;
 	GetComponents(cannonsChilds, true);
-	int level = 1;
+
+	FPlayerConfiguration* PlayerConfiguration = _levelGameMode->StarSpaceGameState()->PlayerConfig;
 
 	for (UChildActorComponent* child : cannonsChilds)
 	{
 		ACannon* cannon = (ACannon*)child->GetChildActor();
+		AddToCannonListIfNecessary(cannon, child);
+		cannon->Activate((child->ComponentHasTag("Angle_Cannon") && PlayerConfiguration->AngleCannon)
+			|| (child->ComponentHasTag("Side_Cannon") && PlayerConfiguration->SideCannon)
+			|| (child->ComponentHasTag("Foward_Cannon") && PlayerConfiguration->FowardCannon)
+			|| child->ComponentHasTag("Main_Cannon"));
+
+		for (auto tag : child->ComponentTags)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("tag -> %s"), *tag.ToString());
+		}
+	}
+}
+
+void APlayerSpaceship::AddToCannonListIfNecessary(ACannon* cannon, UChildActorComponent* child)
+{
+	if (!_cannons.Contains(cannon))
+	{
 		cannon->SetBulletRotation(child->GetComponentRotation());
 		_cannons.Add(cannon);
 	}
 }
+
 
 // Called every frame
 void APlayerSpaceship::Tick(float DeltaTime)

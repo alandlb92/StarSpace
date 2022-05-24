@@ -7,8 +7,10 @@
 #include "Data/GameConfiguration.h"
 #include "Data/PlayerConfiguration.h"
 #include "Save/SaveGameSlot.h"
+#include <iostream>
+#include <list>
 #include "StarSpaceGameState.generated.h"
-
+using namespace std;
 /**
  * 
  */
@@ -20,12 +22,17 @@ public:
 	virtual void BeginPlay() override;
 	FGameConfiguration* GameConfig;
 	FPlayerConfiguration* PlayerConfig;
-	bool IsLoadingOrSaveData;
 	void SaveState();
+	void AddOnloadCallBack(function<void()> callBack);
+
+	bool IsLoading = true;
 
 private:
 	void LoadGameAsync();
 	void OnLoadCompleted(const FString& SaveNameFile, const int32 UserIndex, USaveGame* LoadedGame);
 	void SaveGameAsync();
 	void OnSaveCompleted(const FString& SaveNameFile, const int32 UserIndex, bool success);
+	
+	void OnLoadCallBack();
+	list<function<void()>> _loadCallBacksList;
 };

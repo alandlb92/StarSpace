@@ -17,9 +17,13 @@ void AStarSpaceGameState::SaveState()
 	SaveGameAsync();
 }
 
+void AStarSpaceGameState::AddOnloadCallBack(function<void()> callBack)
+{
+	_loadCallBacksList.push_back(callBack);
+}
+
 void AStarSpaceGameState::SaveGameAsync()
 {
-	IsLoadingOrSaveData = true;
 	USaveGameSlot* SaveGameSlot = Cast<USaveGameSlot>(UGameplayStatics::CreateSaveGameObject(USaveGameSlot::StaticClass()));
 	if (SaveGameSlot != nullptr)
 	{
@@ -36,7 +40,6 @@ void AStarSpaceGameState::OnSaveCompleted(const FString& SaveNameFile, const int
 {
 	if (success)
 	{
-		IsLoadingOrSaveData = false;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("GameData Saved "));
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, SaveNameFile);
 	}
@@ -47,7 +50,7 @@ void AStarSpaceGameState::OnSaveCompleted(const FString& SaveNameFile, const int
 
 void AStarSpaceGameState::LoadGameAsync()
 {
-	IsLoadingOrSaveData = true;
+	IsLoading = true;
 	USaveGameSlot* SavedGameSlot = Cast<USaveGameSlot>(UGameplayStatics::CreateSaveGameObject(USaveGameSlot::StaticClass()));
 	FAsyncLoadGameFromSlotDelegate LoadedDelegate;
 	LoadedDelegate.BindUObject(this, &AStarSpaceGameState::OnLoadCompleted);
@@ -61,7 +64,7 @@ void AStarSpaceGameState::OnLoadCompleted(const FString& SaveNameFile, const int
 		USaveGameSlot* LoadedGameSlot = Cast<USaveGameSlot>(LoadedGame);
 		PlayerConfig = new FPlayerConfiguration(LoadedGameSlot->GetPlayerConfiguration());
 		GameConfig = new FGameConfiguration(LoadedGameSlot->GetGameConfiguration());
-		IsLoadingOrSaveData = false;
+		OnLoadCallBack();
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("GameData loaded"));
 	}
 	else
@@ -70,5 +73,18 @@ void AStarSpaceGameState::OnLoadCompleted(const FString& SaveNameFile, const int
 		PlayerConfig = new FPlayerConfiguration();
 		GameConfig = new FGameConfiguration();
 		SaveGameAsync();
+	}
+	IsLoading = false;
+}
+
+
+void AStarSpaceGameState::OnLoadCallBack()
+{
+	if (_loadCallBacksList.size() > 0)
+	{
+		for (auto OnLoad : _loadCallBacksList)
+		{
+			OnLoad();
+		}
 	}
 }

@@ -19,6 +19,7 @@ public:
 	class UPaperSpriteComponent* _cannonSprite;
 	void Shoot(TSubclassOf<ABullet>, FString);
 	void SetBulletRotation(FRotator);
+	void Activate(bool enable);
 
 
 protected:
