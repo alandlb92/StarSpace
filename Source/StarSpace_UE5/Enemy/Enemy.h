@@ -19,7 +19,7 @@ public:
 	AEnemy();
 
 	UFUNCTION()
-		virtual void  BulletReaction(AActor* BulletToReact) override;
+	virtual void  BulletReaction(AActor* BulletToReact) override;
 
 protected:
 	// Called when the game starts or when spawned

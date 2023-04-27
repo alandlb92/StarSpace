@@ -138,6 +138,21 @@ void APlayerSpaceship::Tick(float DeltaTime)
 	}
 }
 
+void APlayerSpaceship::BulletReaction(AActor* BulletToReact)
+{
+	UE_LOG(LogTemp, Warning, TEXT("BulletReaction -> APlayerSpaceship"));
+
+	if (!Cast<ABullet>(BulletToReact)->CompareTag(OwnerTag))
+	{
+		BulletToReact->Destroy();
+		/*for (ACannon* cannon : _cannons)
+		{
+			cannon->Destroy();
+		}
+		Destroy();*/
+	}
+}
+
 void APlayerSpaceship::Move()
 {
 	FVector MovementDirection = FVector(SpaceShipInput.MovementInput.X, 0, SpaceShipInput.MovementInput.Y);

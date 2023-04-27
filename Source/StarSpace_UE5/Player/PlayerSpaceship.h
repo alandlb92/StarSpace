@@ -7,6 +7,7 @@
 #include "../Cannon/Cannon.h"
 #include "../Bullet/Bullet.h"
 #include "../Data/PlayerConfiguration.h"
+#include "../Bullet/BulletReaction.h"
 #include "../LevelsGameMode.h"
 #include "PlayerSpaceship.generated.h"
 
@@ -28,7 +29,7 @@ private:
 
 
 UCLASS()
-class STARSPACE_UE5_API APlayerSpaceship : public APawn
+class STARSPACE_UE5_API APlayerSpaceship : public APawn, public IBulletReaction
 {
 	GENERATED_BODY()
 
@@ -39,6 +40,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UPaperSpriteComponent* _bodySprite;
+	UFUNCTION()
+	virtual void  BulletReaction(AActor* BulletToReact) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -56,7 +59,11 @@ private:
 
 	float _counter;
 	UWorld* _world;
+
+	UPROPERTY()
 	TArray<ACannon*> _cannons;
+	UPROPERTY()
+	TArray<ACannon*> _shields;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACannon> _cannonRef;

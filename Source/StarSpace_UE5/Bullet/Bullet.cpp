@@ -4,6 +4,9 @@
 #include "Bullet.h"
 #include "PaperSpriteComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/PrimitiveComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "Components/SphereComponent.h"
 #include "../Utils/LocationUtils.h"
 
 // Sets default values
@@ -11,56 +14,67 @@ ABullet::ABullet()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+
 	if (!RootComponent)
 	{
-		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BulletBase"));
+		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SpaceShipBase"));
 	}
 
 	_bodySprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Bullet"));
+	_bodySprite->SetEnableGravity(false);
 	_bodySprite->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	_bodySprite->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	_bodySprite->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
-	_bodySprite->SetSimulatePhysics(true);
-	_bodySprite->SetEnableGravity(false);
-	_bodySprite->BodyInstance.bLockRotation = true;
-	_bodySprite->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	_bodySprite->SetNotifyRigidBodyCollision(true);
-	_bodySprite->SetCollisionProfileName(TEXT("Trigger"));
-	_speed = 1000;
+
+	_speed = 500;
 }
 
 // Called when the game starts or when spawned
 void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UClass* MovementComponentClass = UProjectileMovementComponent::StaticClass();
+	_movementComponent = Cast<UProjectileMovementComponent>(GetComponentByClass(MovementComponentClass));
+
+	 UClass* SphereComponentClass = USphereComponent::StaticClass();
+	_sphereCollision = Cast<USphereComponent>(GetComponentByClass(MovementComponentClass));
 }
 
 void ABullet::StartPhysics()
 {
-	FVector velocity = UKismetMathLibrary::GetForwardVector(_bodySprite->GetComponentRotation() + FRotator(90, 0, 0)) * _speed;
-	velocity *= _bodySprite->GetComponentRotation().Yaw >= 180 ? -1 : 1;
+	FVector velocity = UKismetMathLibrary::GetForwardVector(GetActorRotation() + FRotator(90, 0, 0)) * _speed;
 
-	_bodySprite->SetAllPhysicsLinearVelocity(velocity);
-	_bodySprite->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapBegin);
-	_bodySprite->OnComponentEndOverlap.AddDynamic(this, &ABullet::OnOverlapEnd);
+	if (_movementComponent)
+	{
+		_movementComponent->SetVelocityInLocalSpace(velocity);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("no _movementComponent"));
+	}
+
+	//_bodySprite->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapBegin);
+	//_bodySprite->OnComponentEndOverlap.AddDynamic(this, &ABullet::OnOverlapEnd);
 }
 
 void ABullet::SetLocation(FVector pos)
 {
-	_bodySprite->SetWorldLocation(pos);
+	SetActorRelativeLocation(pos);
 }
 
 
 void ABullet::SetRotator(FRotator rot)
 {
-	_bodySprite->SetWorldRotation(rot);
+	SetActorRelativeRotation(rot);
 }
 
 // Called every frame
 void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (!LocationUtils::IsAppearingOnTheFirstPlayersScreen(_bodySprite->GetComponentLocation(), GetWorld()))
+	if (!LocationUtils::IsAppearingOnTheFirstPlayersScreen(GetActorLocation(), GetWorld()))
 		Destroy();
 }
 
@@ -77,8 +91,12 @@ bool ABullet::CompareTag(FString tag)
 	return tag == OwnerTag;
 }
 
+//DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_FiveParams(FComponentHitSignature, UPrimitiveComponent, OnComponentHit, UPrimitiveComponent*, HitComponent, AActor*, OtherActor, UPrimitiveComponent*, OtherComp, FVector, NormalImpulse, const FHitResult&, Hit);
+
 void ABullet::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin"));
 	IBulletReaction* iBulletReaction = Cast<IBulletReaction>(OtherActor);
 	if (iBulletReaction)
 	{

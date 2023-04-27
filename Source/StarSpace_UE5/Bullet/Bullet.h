@@ -40,10 +40,18 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UPaperSpriteComponent* _bodySprite;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class USphereComponent* _sphereCollision;
+
+
 private:
 	UPROPERTY(EditAnywhere)
 	int _speed;
 
 	FString OwnerTag;
+	
+	UPROPERTY()
+	class UProjectileMovementComponent* _movementComponent;
 
 };

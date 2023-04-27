@@ -20,13 +20,13 @@ public:
 	void Shoot(TSubclassOf<ABullet>, FString);
 	void SetBulletRotation(FRotator);
 	void Activate(bool enable);
+	UPROPERTY(EditAnywhere)
+	FRotator _bulletRotation;
 
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FRotator _bulletRotation;
 
 public:	
 	// Called every frame
