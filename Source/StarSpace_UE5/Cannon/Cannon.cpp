@@ -42,7 +42,7 @@ void ACannon::Shoot(TSubclassOf<ABullet> bullet, FString ownerTag)
 		return;
 
 	UWorld* world = GetWorld();
-	FVector position = RootComponent->GetComponentLocation() + FVector(0, 100, 0);
+	FVector position = RootComponent->GetComponentLocation() + FVector(0, 1, 0);
 	FRotator rotation = RootComponent->GetRelativeRotation();
 	ABullet* instance = (ABullet*)world->SpawnActor(bullet);
 	instance->SetLocation(position);

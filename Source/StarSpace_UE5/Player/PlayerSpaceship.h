@@ -8,6 +8,7 @@
 #include "../Bullet/Bullet.h"
 #include "../Data/PlayerConfiguration.h"
 #include "../Bullet/BulletReaction.h"
+#include "..\Shield.h"
 #include "../LevelsGameMode.h"
 #include "PlayerSpaceship.generated.h"
 
@@ -51,6 +52,7 @@ protected:
 	FSpaceShipInput SpaceShipInput;
 
 private:
+	void OnLoadLevel();
 	static const FString OwnerTag;
 	const float TimeBetweenShoots = .2f;
 
@@ -58,7 +60,11 @@ private:
 	void MoveX(float axisValue);
 
 	float _counter;
+	UPROPERTY()
 	UWorld* _world;
+
+	UPROPERTY()
+	AShield* _shield;
 
 	UPROPERTY()
 	TArray<ACannon*> _cannons;
@@ -86,11 +92,16 @@ private:
 	bool _canShoot;
 	bool _canCoolDown;
 
+	UPROPERTY()
 	ALevelsGameMode* _levelGameMode;
+	UPROPERTY()
 	APlayerController* _playerController;
+	UPROPERTY()
 	class APlayerHUD* _playerHUD;
 
 	void ConfigureActiveCannons();
+	void ConfigureActiveShields();
+
 	void Move();
 	void ClampSpaceShipPosition();
 	void StartShoot();

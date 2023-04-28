@@ -35,15 +35,20 @@ void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UClass* MovementComponentClass = UProjectileMovementComponent::StaticClass();
-	_movementComponent = Cast<UProjectileMovementComponent>(GetComponentByClass(MovementComponentClass));
-
-	 UClass* SphereComponentClass = USphereComponent::StaticClass();
-	_sphereCollision = Cast<USphereComponent>(GetComponentByClass(MovementComponentClass));
 }
 
 void ABullet::StartPhysics()
 {
+	if (!_movementComponent) {
+		UClass* MovementComponentClass = UProjectileMovementComponent::StaticClass();
+		_movementComponent = Cast<UProjectileMovementComponent>(GetComponentByClass(MovementComponentClass));
+	}
+
+	if (!_sphereCollision) {
+		UClass* SphereComponentClass = USphereComponent::StaticClass();
+		_sphereCollision = Cast<USphereComponent>(GetComponentByClass(SphereComponentClass));
+	}
+
 	FVector velocity = UKismetMathLibrary::GetForwardVector(GetActorRotation() + FRotator(90, 0, 0)) * _speed;
 
 	if (_movementComponent)
@@ -55,8 +60,16 @@ void ABullet::StartPhysics()
 		UE_LOG(LogTemp, Error, TEXT("no _movementComponent"));
 	}
 
-	//_bodySprite->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapBegin);
-	//_bodySprite->OnComponentEndOverlap.AddDynamic(this, &ABullet::OnOverlapEnd);
+	if (_sphereCollision)
+	{
+		_sphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapBegin);
+		_sphereCollision->OnComponentEndOverlap.AddDynamic(this, &ABullet::OnOverlapEnd);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("no _sphereCollision"));
+	}
+
 }
 
 void ABullet::SetLocation(FVector pos)
@@ -95,8 +108,6 @@ bool ABullet::CompareTag(FString tag)
 
 void ABullet::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
-	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin"));
 	IBulletReaction* iBulletReaction = Cast<IBulletReaction>(OtherActor);
 	if (iBulletReaction)
 	{
@@ -106,7 +117,6 @@ void ABullet::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AA
 
 void ABullet::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd"));
 }
 
 void ABullet::BulletReaction(AActor* BulletToReact)
