@@ -18,7 +18,7 @@ struct FSpaceShipInput
 	GENERATED_BODY()
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SpaceShip Input")
-	FVector2D MovementInput;
+		FVector2D MovementInput;
 
 	void Sanitize();
 	void MoveX(float AxisValue);
@@ -36,22 +36,26 @@ class STARSPACE_UE5_API APlayerSpaceship : public APawn, public IBulletReaction
 
 public:
 	APlayerSpaceship();
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;	
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UPaperSpriteComponent* _bodySprite;
+		class UPaperSpriteComponent* _bodySprite;
 	UFUNCTION()
-	virtual void  BulletReaction(AActor* BulletToReact) override;
+		virtual void  BulletReaction(AActor* BulletToReact) override;
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;	
-	
+	virtual void BeginPlay() override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SpaceShip")
-	FSpaceShipInput SpaceShipInput;
+		FSpaceShipInput SpaceShipInput;
 
 private:
+	TArray<class UBoxComponent*> FindAllBoxComponents(AActor* Actor);
+
+	void TakeDamage();
+
 	void OnLoadLevel();
 	static const FString OwnerTag;
 	const float TimeBetweenShoots = .2f;
@@ -61,43 +65,43 @@ private:
 
 	float _counter;
 	UPROPERTY()
-	UWorld* _world;
+		UWorld* _world;
 
 	UPROPERTY()
-	AShield* _shield;
+		AShield* _shield;
 
 	UPROPERTY()
-	TArray<ACannon*> _cannons;
+		TArray<ACannon*> _cannons;
 	UPROPERTY()
-	TArray<ACannon*> _shields;
+		TArray<ACannon*> _shields;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ACannon> _cannonRef;
+		TSubclassOf<ACannon> _cannonRef;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ABullet> _bulletRef;
+		TSubclassOf<ABullet> _bulletRef;
 
 	UPROPERTY(EditAnywhere)
-	int _speed;
+		int _speed;
 
 	UPROPERTY(EditAnywhere)
-	int _cannonsLevel = 1;
+		int _cannonsLevel = 1;
 
 	UPROPERTY(EditAnywhere)
-	int _currentHeating;
+		int _currentHeating;
 	UPROPERTY(EditAnywhere)
-	int _maxHeating;
+		int _maxHeating;
 	bool _isShooting;
 	bool _isOverHeat;
 	bool _canShoot;
 	bool _canCoolDown;
 
 	UPROPERTY()
-	ALevelsGameMode* _levelGameMode;
+		ALevelsGameMode* _levelGameMode;
 	UPROPERTY()
-	APlayerController* _playerController;
+		APlayerController* _playerController;
 	UPROPERTY()
-	class APlayerHUD* _playerHUD;
+		class APlayerHUD* _playerHUD;
 
 	void ConfigureActiveCannons();
 	void ConfigureActiveShields();
@@ -113,4 +117,6 @@ private:
 	void CoolDown();
 	void AddToCannonListIfNecessary(ACannon* cannon, UChildActorComponent* child);
 
+	UPROPERTY()
+	TArray<class UBoxComponent*> _colliders;
 };

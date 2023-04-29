@@ -7,6 +7,7 @@
 #include "PaperSprite.h"
 #include "Camera/CameraComponent.h"
 #include "../Utils/LocationUtils.h"
+#include "Components/BoxComponent.h"
 #include "../UI/PlayerHUD.h"
 
 const FString  APlayerSpaceship::OwnerTag = FString(TEXT("Player"));
@@ -49,11 +50,46 @@ APlayerSpaceship::APlayerSpaceship()
 
 }
 
+
+TArray<UBoxComponent*> APlayerSpaceship::FindAllBoxComponents(AActor* Actor)
+{
+
+	UE_LOG(LogTemp, Warning, TEXT("FindAllBoxComponents"));
+
+	TArray<UBoxComponent*> BoxComponents;
+
+	for (UActorComponent* Component : Actor->GetComponents())
+	{
+		UBoxComponent* BoxComponent = Cast<UBoxComponent>(Component);
+		if (BoxComponent)
+		{
+			BoxComponents.Add(BoxComponent);
+		}
+	}
+
+	TArray<AActor*> ChildrenActors;
+	Actor->GetAttachedActors(ChildrenActors);
+	for (AActor* Child : ChildrenActors)
+	{
+		TArray<UBoxComponent*> ChildBoxComponents = FindAllBoxComponents(Child);
+		BoxComponents.Append(ChildBoxComponents);
+	}
+
+	return BoxComponents;
+}
+
 // Called when the game starts or when spawned
 void APlayerSpaceship::BeginPlay()
 {
 	Super::BeginPlay();
 	_world = GetWorld();
+
+	if (_colliders.IsEmpty()) {
+		_colliders = FindAllBoxComponents(this);
+	}
+
+	if(_colliders.IsEmpty())
+		UE_LOG(LogTemp, Error, TEXT("_colliders.IsEmpty()"));
 
 	if (_world)
 	{
@@ -74,6 +110,27 @@ void APlayerSpaceship::BeginPlay()
 		}
 	}
 }
+
+void APlayerSpaceship::TakeDamage()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TakeDamage"));
+
+
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	// Verifica se o controlador do jogador está controlando o ator que deseja desativar
+	if (PlayerController && PlayerController->GetPawn() == this)
+	{
+		// Desativa o controle do jogador no ator atual
+		PlayerController->UnPossess();
+	}
+		UE_LOG(LogTemp, Error, TEXT("PlayerController not found"));
+
+	_bodySprite->SetVisibility(false);
+	for (auto c : _colliders)
+		c->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
+}
+
 void APlayerSpaceship::OnLoadLevel()
 {
 	ConfigureActiveCannons();
@@ -107,7 +164,7 @@ void  APlayerSpaceship::ConfigureActiveCannons()
 	FPlayerConfiguration* PlayerConfiguration = _levelGameMode->StarSpaceGameState()->PlayerConfig;
 
 	for (UChildActorComponent* child : cannonsChilds)
-	{		
+	{
 		ACannon* cannon = Cast<ACannon>(child->GetChildActor());
 		if (!cannon)
 		{
@@ -119,7 +176,7 @@ void  APlayerSpaceship::ConfigureActiveCannons()
 			|| (child->ComponentHasTag("Side_Cannon") && PlayerConfiguration->SideCannon)
 			|| (child->ComponentHasTag("Foward_Cannon") && PlayerConfiguration->FowardCannon)
 			|| child->ComponentHasTag("Main_Cannon"));
-		
+
 		for (auto tag : child->ComponentTags)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("tag -> %s"), *tag.ToString());
@@ -174,11 +231,7 @@ void APlayerSpaceship::BulletReaction(AActor* BulletToReact)
 	if (!Cast<ABullet>(BulletToReact)->CompareTag(OwnerTag))
 	{
 		BulletToReact->Destroy();
-		/*for (ACannon* cannon : _cannons)
-		{
-			cannon->Destroy();
-		}
-		Destroy();*/
+		TakeDamage();
 	}
 }
 

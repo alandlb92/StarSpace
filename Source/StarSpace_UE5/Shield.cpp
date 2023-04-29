@@ -31,11 +31,6 @@ void AShield::BulletReaction(AActor* BulletToReact)
 	{
 		BulletToReact->Destroy();
 		TakeDamage();
-		/*for (ACannon* cannon : _cannons)
-		{
-			cannon->Destroy();
-		}
-		Destroy();*/
 	}
 }
 
@@ -43,18 +38,24 @@ void AShield::BulletReaction(AActor* BulletToReact)
 void AShield::BeginPlay()
 {
 	Super::BeginPlay();
+	if (!_sphereCollision) {
+		UClass* SphereComponentClass = USphereComponent::StaticClass();
+		_sphereCollision = Cast<USphereComponent>(GetComponentByClass(SphereComponentClass));
+	}
 }
 
 void AShield::Enable()
 {
 	isEnable = true;
 	_shieldSprite->SetVisibility(true);
+	_sphereCollision->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
 }
 
 void AShield::Disable()
 {
 	isEnable = false;
 	_shieldSprite->SetVisibility(false);
+	_sphereCollision->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
 }
 
 void AShield::SetOwnerName(FString owner)
