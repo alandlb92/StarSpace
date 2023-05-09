@@ -124,11 +124,14 @@ void APlayerSpaceship::TakeDamage()
 		// Desativa o controle do jogador no ator atual
 		PlayerController->UnPossess();
 	}
-		UE_LOG(LogTemp, Error, TEXT("PlayerController not found"));
 
 	_bodySprite->SetVisibility(false);
+
 	for (auto c : _colliders)
 		c->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
+
+	for (auto cannon : _cannons)
+		cannon->Disable();
 }
 
 void APlayerSpaceship::OnLoadLevel()

@@ -31,6 +31,16 @@ void ACannon::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ACannon::Disable()
+{
+	_cannonSprite->SetVisibility(false);
+}
+
+void ACannon::Enable()
+{
+	_cannonSprite->SetVisibility(true);
+}
+
 void ACannon::SetBulletRotation(FRotator rot)
 {
 	_bulletRotation = rot;
